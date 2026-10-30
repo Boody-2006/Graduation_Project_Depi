@@ -1,0 +1,1264 @@
+/* ==================================================================
+   MediCare – styles.css
+
+   TABLE OF CONTENTS
+    1. Colors and sizes (change the whole look from here)
+    2. Base
+    3. Layout helpers
+    4. Buttons, icons and badges
+    5. Forms
+    6. Header and navigation
+    7. Image slots (photos you add in /img)
+    8. Cards and lists
+    9. Public pages (hero, steps, FAQ, call to action, footer)
+   10. Login and register
+   11. Logged-in pages (stats, tables, chips, ticket, schedule, charts, MRI)
+   12. Profile
+   13. Modals, stars, time slots and toasts
+   14. Print (prescription)
+   15. Small screens
+   ================================================================== */
+
+
+/* ==================================================================
+   1. COLORS AND SIZES
+   Dark mode: JavaScript sets  <html data-theme="dark">
+   ================================================================== */
+:root {
+  --bg:             #f5f8fa;   /* page background */
+  --surface:        #ffffff;   /* cards, header, forms */
+  --surface-2:      #eef3f6;   /* image placeholders, soft areas */
+  --text:           #243342;
+  --muted:          #6b7b8a;
+  --line:           #e1e8ed;
+
+  --primary:        #3a7ca5;
+  --primary-strong: #2f6a8f;
+  --primary-soft:   #e6f0f6;
+  --on-primary:     #ffffff;   /* text written on top of --primary */
+
+  --accent:         #c9714a;
+  --ok:             #3a8a68;
+  --danger:         #b5483f;
+
+  --radius:         10px;
+  --shadow:         0 2px 14px rgba(36, 51, 66, .07);
+  --font:           "IBM Plex Sans Arabic", system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg:             #10181e;
+  --surface:        #172229;
+  --surface-2:      #1d2b34;
+  --text:           #dde6eb;
+  --muted:          #8c9ea9;
+  --line:           #263641;
+
+  --primary:        #6bb0d6;
+  --primary-strong: #8cc3e2;
+  --primary-soft:   #1b3342;
+  --on-primary:     #0e1d27;
+
+  --accent:         #e29a77;
+  --ok:             #5cc29a;
+  --danger:         #ee8a80;
+
+  --shadow:         0 2px 14px rgba(0, 0, 0, .3);
+
+  color-scheme: dark;
+}
+
+
+/* ==================================================================
+   2. BASE
+   ================================================================== */
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.7 var(--font);
+}
+
+main {
+  flex: 1;          /* keeps the footer at the bottom of short pages */
+}
+
+h1, h2, h3 {
+  margin: 0 0 .5em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.7rem; }
+h3 { font-size: 1.1rem; }
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+.lead  { max-width: 54ch; font-size: 1.15rem; color: var(--muted); }
+.grow  { flex: 1; min-width: 0; }
+
+.link {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+
+/* ==================================================================
+   3. LAYOUT HELPERS
+   ================================================================== */
+.container {
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.section        { padding: 64px 0; }
+.section-alt    { padding: 64px 0; background: var(--surface); border-block: 1px solid var(--line); }
+.section-head   { margin-bottom: 28px; }
+.section-link   { margin-top: 24px; }
+
+.page-head      { padding: 40px 0 0; }
+.page-body      { padding-block: 32px 56px; }
+.page-body h2   { margin-top: 36px; }
+
+.grid           { display: grid; gap: 24px; }
+.grid-3         { grid-template-columns: repeat(3, 1fr); }
+.grid-4         { grid-template-columns: repeat(4, 1fr); }
+
+.split          { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.split-top      { align-items: start; }
+
+.row            { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions        { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 32px; }
+
+
+/* ==================================================================
+   4. BUTTONS, ICONS AND BADGES
+   ================================================================== */
+.btn {
+  display: inline-block;
+  padding: 9px 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+
+.btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.btn-primary       { background: var(--primary); color: var(--on-primary); }
+.btn-primary:hover:not(:disabled) { background: var(--primary-strong); }
+
+.btn-outline       { border-color: var(--line); background: var(--surface); }
+.btn-outline:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+
+.btn-ghost:hover   { background: var(--primary-soft); }
+
+.btn-light         { background: var(--on-primary); color: var(--primary); }
+
+.btn-danger        { color: var(--danger); }
+.btn-danger:hover:not(:disabled) { border-color: var(--danger); color: var(--danger); }
+
+.btn-lg            { padding: 12px 26px; }
+.btn-sm            { padding: 5px 12px; font-size: .88rem; }
+
+.icon-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-lg { width: 44px; height: 44px; }
+
+/* Show the moon in light mode and the sun in dark mode */
+[data-theme="dark"]  .icon-moon,
+[data-theme="light"] .icon-sun { display: none; }
+
+.badge {
+  position: absolute;
+  top: -6px;
+  inset-inline-end: -6px;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+}
+
+
+/* ==================================================================
+   5. FORMS
+   ================================================================== */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: inherit;
+  font: inherit;
+}
+
+textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+input[readonly] {
+  opacity: .65;
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.field {
+  display: grid;
+  gap: 5px;
+}
+
+.field-label {
+  font-weight: 500;
+}
+
+.field-group {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.form-error {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--danger);
+}
+
+.notice {
+  margin: 0 0 1em;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.notice-ok {
+  color: var(--ok);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.check input {
+  width: auto;
+}
+
+/* Role switch: Patient | Doctor | Assistant */
+.segmented {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.segmented button {
+  flex: 1;
+  padding: 9px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.segmented button.is-active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+
+/* ==================================================================
+   6. HEADER AND NAVIGATION
+   ================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 66px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.main-nav {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.main-nav a {
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-links {
+  display: flex;
+  gap: 8px;
+}
+
+/* Account picture + drop-down menu */
+.account {
+  position: relative;
+}
+
+.avatar-button {
+  display: flex;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-lg {
+  width: 96px;
+  height: 96px;
+  font-size: 2rem;
+}
+
+.account-menu {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 10px);
+  min-width: 230px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.account-menu a {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 8px;
+}
+
+.account-menu a:hover {
+  background: var(--primary-soft);
+}
+
+.account-menu-head {
+  display: grid;
+  margin-bottom: 4px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  word-break: break-all;
+}
+
+
+/* ==================================================================
+   7. IMAGE SLOTS
+   Every photo is <figure class="slot" data-file="name.jpg">.
+   Put the real picture in /img with that exact name.
+   While the file is missing, its name is written inside the box.
+   ================================================================== */
+.slot {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot.missing img {
+  display: none;
+}
+
+.slot.missing::after {
+  content: attr(data-file);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  color: var(--muted);
+  font-size: .8rem;
+  direction: ltr;
+  text-align: center;
+  word-break: break-all;
+}
+
+.ratio-4x3 { aspect-ratio: 4 / 3; }
+.ratio-3x2 { aspect-ratio: 3 / 2; border-radius: 0; }
+.ratio-1x1 { aspect-ratio: 1 / 1; border-radius: 0; }
+
+/* Small round picture next to a specialty name */
+.slot-dot {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.slot-dot.missing::after {
+  content: none;
+}
+
+
+/* ==================================================================
+   8. CARDS AND LISTS
+   ================================================================== */
+.card {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+a.card:hover {
+  border-color: var(--primary);
+}
+
+.card-body {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 18px;
+}
+
+.card-body h3,
+.card-body p {
+  margin: 0;
+}
+
+.card-body .btn {
+  justify-self: start;
+  margin-top: 6px;
+}
+
+.rating {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.empty {
+  padding: 16px 0;
+}
+
+
+/* ==================================================================
+   9. PUBLIC PAGES
+   ================================================================== */
+.hero {
+  padding: 64px 0;
+  background: linear-gradient(180deg, var(--primary-soft), var(--bg));
+}
+
+.hero h1 {
+  font-size: 2.9rem;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stats strong {
+  display: block;
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+.stats span {
+  color: var(--muted);
+}
+
+.step {
+  padding: 26px;
+  margin-bottom: 14px;
+}
+
+.step h3 { margin-bottom: 4px; }
+.step p  { margin: 0; }
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 700;
+}
+
+.check-list {
+  padding-inline-start: 20px;
+  color: var(--muted);
+}
+
+.faq details {
+  margin-bottom: 12px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.faq summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faq p {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.cta {
+  padding: 64px 0;
+  background: var(--primary);
+  color: var(--on-primary);
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filters input[type="search"] {
+  flex: 1;
+  min-width: 220px;
+  width: auto;
+}
+
+.filters select {
+  width: auto;
+}
+
+.site-footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.footer-links a {
+  margin-inline-end: 18px;
+  color: var(--muted);
+}
+
+.footer-links a:hover {
+  color: var(--primary);
+}
+
+
+/* ==================================================================
+   10. LOGIN AND REGISTER
+   ================================================================== */
+.auth-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.auth-form h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+
+/* ==================================================================
+   11. LOGGED-IN PAGES
+   ================================================================== */
+
+/* Big numbers at the top of a dashboard */
+.stats-page {
+  margin-bottom: 8px;
+}
+
+.stats-page strong {
+  font-size: 2.1rem;
+}
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: 8px;
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 500;
+  text-align: start;
+}
+
+.table td {
+  padding: 11px 8px;
+  border-top: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+/* Status chips: a coloured dot + text */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.chip::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.chip-pending     { color: var(--accent); }
+.chip-confirmed   { color: var(--ok); }
+.chip-approved    { color: var(--ok); }
+.chip-done        { color: var(--muted); }
+.chip-rescheduled { color: var(--muted); }
+.chip-cancelled   { color: var(--danger); }
+.chip-rejected    { color: var(--danger); }
+
+/* "Next appointment" ticket */
+.ticket {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding: 24px 34px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.ticket strong { display: block; font-size: 1.5rem; }
+.ticket small  { display: block; opacity: .8; }
+.ticket span   { display: block; }
+
+.ticket .chip  { color: var(--on-primary); }
+
+.ticket-divider {
+  align-self: stretch;
+  border-inline-start: 2px dashed rgba(255, 255, 255, .45);
+}
+
+/* the two round "tear" notches */
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin-top: -11px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.ticket::before { inset-inline-start: -11px; }
+.ticket::after  { inset-inline-end: -11px; }
+
+/* Doctor's weekly schedule */
+.week {
+  display: grid;
+  grid-template-columns: 64px repeat(5, minmax(130px, 1fr));
+  min-width: 800px;
+  border-top: 1px solid var(--line);
+  border-inline-start: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.week > div {
+  min-height: 58px;
+  padding: 6px;
+  border-bottom: 1px solid var(--line);
+  border-inline-end: 1px solid var(--line);
+  font-size: .85rem;
+}
+
+.week-head {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.week-item {
+  display: block;
+  margin-bottom: 3px;
+  padding: 4px 8px;
+  border-inline-start: 3px solid var(--primary);
+  border-radius: 4px;
+  background: var(--primary-soft);
+}
+
+.week-item.is-pending {
+  border: 1px dashed var(--accent);
+  background: none;
+}
+
+/* Assistant charts */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 180px;
+  margin-bottom: 36px;
+}
+
+.bar {
+  position: relative;
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  background: var(--primary);
+}
+
+.bar em {
+  position: absolute;
+  top: -22px;
+  inset-inline: 0;
+  font-size: .8rem;
+  font-style: normal;
+  text-align: center;
+}
+
+.bar small {
+  position: absolute;
+  bottom: -24px;
+  inset-inline: 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+.donut {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(circle 46px, transparent 98%, #000);
+          mask: radial-gradient(circle 46px, transparent 98%, #000);
+}
+
+.legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .9rem;
+}
+
+.legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* MRI upload and result */
+.dropzone {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1.5px dashed var(--primary);
+  border-radius: var(--radius);
+  color: var(--primary);
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropzone img {
+  max-height: 280px;
+  border-radius: 8px;
+}
+
+.mri-class {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.mri-class.is-ok     { color: var(--ok); }
+.mri-class.is-danger { color: var(--danger); }
+
+.meter {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--line);
+}
+
+.meter div {
+  height: 100%;
+  background: var(--primary);
+}
+
+
+/* ==================================================================
+   12. PROFILE
+   ================================================================== */
+.profile-form {
+  display: grid;
+  gap: 16px;
+  max-width: 520px;
+}
+
+.profile-photo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+
+/* ==================================================================
+   13. MODALS, STARS, TIME SLOTS AND TOASTS
+   ================================================================== */
+.modal {
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, .55);
+}
+
+.modal-box {
+  display: grid;
+  gap: 14px;
+  width: min(520px, calc(100vw - 32px));
+  max-height: 88vh;
+  overflow: auto;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.modal-box h2 {
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.medication-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stars {
+  display: flex;
+  gap: 6px;
+}
+
+.stars button {
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.stars button.is-on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.slots button {
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.slots button:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.slots button:disabled {
+  opacity: .35;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.toasts {
+  position: fixed;
+  inset-block-end: 20px;
+  inset-inline-end: 20px;
+  z-index: 50;
+  display: grid;
+  gap: 8px;
+}
+
+.toast {
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+
+/* ==================================================================
+   14. PRINT – only the prescription is printed
+   ================================================================== */
+#print-area {
+  display: none;
+}
+
+.rx-sheet h2 { margin-bottom: 4px; }
+.rx-sheet ol { padding-inline-start: 22px; }
+
+@media print {
+  body > *:not(#print-area) {
+    display: none !important;
+  }
+
+  #print-area {
+    display: block;
+    padding: 24px;
+    color: #000;
+  }
+}
+
+
+/* ==================================================================
+   15. SMALL SCREENS
+   ================================================================== */
+@media (max-width: 900px) {
+  h1 { font-size: 1.9rem; }
+  .hero h1 { font-size: 2rem; }
+
+  .container { padding-inline: 16px; }
+
+  .split,
+  .auth-layout { grid-template-columns: 1fr; gap: 28px; }
+
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+  .section,
+  .section-alt,
+  .hero,
+  .cta { padding-block: 40px; }
+
+  .header-inner {
+    flex-wrap: wrap;
+    padding-block: 8px;
+  }
+
+  .main-nav {
+    order: 5;
+    flex: none;
+    width: 100%;
+  }
+
+  .ticket {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .ticket-divider { display: none; }
+
+  .list-row { flex-wrap: wrap; }
+
+  .medication-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .slots  { grid-template-columns: repeat(3, 1fr); }
+}
+
+
+/* ==================================================================
+   16. ADDED FOR THE FULL ERD (documents, scans, schedule, notifications)
+   ================================================================== */
+.chip-unpaid { color: var(--accent); }
+.chip-paid   { color: var(--ok); }
+
+.block { display: block; }
+
+.heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.heading-row h1,
+.heading-row h2 { margin-bottom: .5em; }
+
+/* a small form placed under a table */
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.inline-form .field { min-width: 140px; }
+.inline-form .form-error { flex-basis: 100%; }
+
+.form-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.modal-wide .medication-row { grid-template-columns: repeat(5, 1fr); }
+.modal-wide { width: min(860px, calc(100vw - 32px)); }
+
+.list-row-top { align-items: flex-start; }
+
+.detail {
+  margin: 4px 0 0;
+  font-size: .92rem;
+}
+
+[data-f="items"] { white-space: pre-line; }
+
+/* notifications */
+.notification .dot {
+  width: 10px;
+  height: 10px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--line);
+  flex: none;
+}
+
+.notification.unread .dot { background: var(--accent); }
+.notification.unread strong { color: var(--primary); }
+
+/* probability of each MRI class */
+.score-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 48px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: .9rem;
+}
+
+.score-row b { text-align: end; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .modal-wide .medication-row { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 110px 1fr 44px; }
+}

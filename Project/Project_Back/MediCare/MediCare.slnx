@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MediCare.Data/MediCare.Data.csproj" />
+  <Project Path="MediCare.Services/MediCare.Services.csproj" />
+  <Project Path="MediCare.Web/MediCare.Web.csproj" />
+</Solution>

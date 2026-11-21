@@ -15,6 +15,8 @@ namespace MediCare.Data.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public bool IsActive { get; set; } = true;
+
         public int? AddressId { get; set; }
 
         public HomeAddress? HomeAddress { get; set; }

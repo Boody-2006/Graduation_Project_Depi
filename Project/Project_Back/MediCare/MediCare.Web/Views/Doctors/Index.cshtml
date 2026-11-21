@@ -1,0 +1,60 @@
+﻿@model List<MediCare.Services.ViewModels.DoctorCardVM>
+
+@{
+    ViewData["Title"] = "Our Doctors";
+    var filter = ViewBag.Filter as MediCare.Services.ViewModels.DoctorFilterVM;
+}
+
+<section class="ph0">
+    <div class="wrap">
+        <h1>Find Your Doctor</h1>
+        <p class="mu">Choose the right specialist for your health.</p>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="wrap">
+
+        <form method="get" asp-action="Index" class="fb">
+            <input name="SearchTerm"
+                   value="@filter?.SearchTerm"
+                   placeholder="Search by doctor name..." />
+
+            <input name="City"
+                   value="@filter?.City"
+                   placeholder="City..." />
+
+            <button class="pb" type="submit">Search</button>
+            <a class="sm" asp-action="Index">Clear</a>
+        </form>
+
+        <p class="mu">@Model.Count doctors found</p>
+
+        <div class="cards">
+            @foreach (var doctor in Model)
+            {
+                <div class="dc">
+                    <span class="ph dph">
+                        <img src="@doctor.ProfileImage"
+                             alt="@doctor.FullName" />
+                    </span>
+
+                    <div class="cb">
+                        <h3>@doctor.FullName</h3>
+                        <span class="mu">@doctor.SpecializationName</span>
+                        <span>@doctor.City</span>
+                        <span class="rt">
+                            ★ @(doctor.AverageRating?.ToString("0.0") ?? "No rating")
+                        </span>
+                        <b>@doctor.ConsultationFee EGP</b>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="mu">No doctors found. Try another search.</p>
+        }
+    </div>
+</section>

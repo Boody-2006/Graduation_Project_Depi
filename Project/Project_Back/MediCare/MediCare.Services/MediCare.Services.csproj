@@ -10,10 +10,4 @@
     <ProjectReference Include="..\MediCare.Data\MediCare.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Implementations\" />
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 </Project>

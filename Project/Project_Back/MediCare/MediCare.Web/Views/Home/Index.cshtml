@@ -1,8 +1,103 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+
+    var specialties = new[]
+    {
+        "Neurology",
+        "Radiology",
+        "Neurosurgery",
+        "Internal Medicine",
+        "Cardiology",
+        "Pediatrics",
+        "Dermatology",
+        "Orthopedics"
+    };
+
+    var steps = new[]
+    {
+        (Title: "Search", Text: "Find doctors by specialty, city and availability."),
+        (Title: "Book", Text: "Choose an available slot and book your appointment."),
+        (Title: "Visit and Follow Up", Text: "Keep your prescriptions and medical records in one place.")
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero">
+    <div class="wrap hg">
+        <div>
+            <h1>Your health, scheduled with care</h1>
+
+            <p class="lead">
+                Find the right specialist, book in seconds and keep every record,
+                prescription and scan in one secure place.
+            </p>
+
+            <div class="row">
+                <a class="pb" asp-controller="Doctors" asp-action="Index">
+                    Book an appointment
+                </a>
+
+                <a class="sm" asp-controller="Account" asp-action="Register">
+                    Register
+                </a>
+            </div>
+        </div>
+
+        <span class="ph himg">
+            <img src="~/img/hero.jpg" alt="MediCare" />
+        </span>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="wrap">
+        <div class="sh2">
+            <h2>Browse by Specialty</h2>
+            <p class="mu">Choose the medical field you need.</p>
+        </div>
+
+        <div class="cards">
+            @for (var i = 0; i < specialties.Length; i++)
+            {
+                <a class="sc" asp-controller="Doctors" asp-action="Index">
+                    <span class="ph simg">
+                        <img src="@Url.Content($"~/img/spec-{i}.jpg")"
+                             alt="@specialties[i]"
+                             loading="lazy" />
+                    </span>
+
+                    <b>@specialties[i]</b>
+                    <span class="mu">View doctors</span>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="sec alt">
+    <div class="wrap">
+        <div class="sh2">
+            <h2>How It Works</h2>
+        </div>
+
+        <div class="cards c3">
+            @for (var i = 0; i < steps.Length; i++)
+            {
+                <div class="stp">
+                    <span class="n">@(i + 1)</span>
+                    <b>@steps[i].Title</b>
+                    <p class="mu">@steps[i].Text</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="wrap">
+        <h2>Ready to book your visit?</h2>
+
+        <a class="pb inv" asp-controller="Doctors" asp-action="Index">
+            Book an appointment
+        </a>
+    </div>
+</section>

@@ -1,8 +1,10 @@
+using MediCare.Services.Interfaces;
+using MediCare.Services.Implementations;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScoped<IDoctorService, FakeDoctorService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

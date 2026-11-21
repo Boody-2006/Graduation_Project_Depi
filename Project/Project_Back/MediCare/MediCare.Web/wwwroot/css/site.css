@@ -9,7 +9,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #1d5f8a;
 }
 
 html {
@@ -19,13 +19,126 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #f8fafc;
+  font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1e293b;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* =========================================================
+   MediCare - Person 5 Authentication Modern Theme
+   ========================================================= */
+
+.auth-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.auth-header {
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.auth-header.primary-theme {
+  background: linear-gradient(135deg, #1d5f8a 0%, #0f3d5c 100%);
+  color: #ffffff;
+}
+
+.auth-header.doctor-theme {
+  background: linear-gradient(135deg, #198754 0%, #0f5132 100%);
+  color: #ffffff;
+}
+
+.auth-icon-circle {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.auth-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+.auth-body {
+  padding: 2rem;
+}
+
+.form-label-custom {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #334155;
+  margin-bottom: 0.4rem;
+}
+
+.form-control-custom, .form-select-custom {
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+  border-color: #1d5f8a;
+  box-shadow: 0 0 0 3px rgba(29, 95, 138, 0.15);
+}
+
+.btn-auth-primary {
+  background: linear-gradient(135deg, #1d5f8a 0%, #154666 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-auth-primary:hover {
+  background: linear-gradient(135deg, #154666 0%, #0d2e43 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(29, 95, 138, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-auth-doctor {
+  background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-auth-doctor:hover {
+  background: linear-gradient(135deg, #146c43 0%, #0f5132 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
+  transform: translateY(-1px);
+}
+
+.auth-badge-role {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+  border-radius: 6px;
+  font-weight: 600;
 }

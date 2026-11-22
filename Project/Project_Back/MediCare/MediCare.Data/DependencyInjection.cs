@@ -1,5 +1,4 @@
 using MediCare.Data.Repositories;
-using MediCare.Data.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MediCare.Data
@@ -13,7 +12,9 @@ namespace MediCare.Data
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<ISpecializationRepository, SpecializationRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Fully qualified: "UnitOfWork" is both a namespace and a class name.
+            services.AddScoped<MediCare.Data.UnitOfWork.IUnitOfWork, MediCare.Data.UnitOfWork.UnitOfWork>();
 
             return services;
         }

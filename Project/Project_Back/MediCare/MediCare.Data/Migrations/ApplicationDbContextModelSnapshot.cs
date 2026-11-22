@@ -395,7 +395,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 1,
                             Description = "Diagnosis and treatment of nervous system disorders.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-0.jpg",
                             Name = "Neurology",
                             NameAr = "مخ وأعصاب"
                         },
@@ -403,7 +403,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 2,
                             Description = "Medical imaging and diagnostic radiology.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-1.jpg",
                             Name = "Radiology",
                             NameAr = "أشعة"
                         },
@@ -411,7 +411,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 3,
                             Description = "Surgical treatment of nervous system disorders.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-2.jpg",
                             Name = "Neurosurgery",
                             NameAr = "جراحة مخ وأعصاب"
                         },
@@ -419,7 +419,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 4,
                             Description = "Diagnosis and treatment of internal diseases.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-3.jpg",
                             Name = "Internal Medicine",
                             NameAr = "باطنة"
                         },
@@ -427,7 +427,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 5,
                             Description = "Diagnosis and treatment of heart diseases.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-4.jpg",
                             Name = "Cardiology",
                             NameAr = "قلب"
                         },
@@ -435,7 +435,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 6,
                             Description = "Medical care for children.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-5.jpg",
                             Name = "Pediatrics",
                             NameAr = "أطفال"
                         },
@@ -443,7 +443,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 7,
                             Description = "Diagnosis and treatment of skin conditions.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-6.jpg",
                             Name = "Dermatology",
                             NameAr = "جلدية"
                         },
@@ -451,7 +451,7 @@ namespace MediCare.Data.Migrations
                         {
                             Id = 8,
                             Description = "Diagnosis and treatment of bone and joint disorders.",
-                            ImageUrl = "",
+                            ImageUrl = "img/spec-7.jpg",
                             Name = "Orthopedics",
                             NameAr = "عظام"
                         });

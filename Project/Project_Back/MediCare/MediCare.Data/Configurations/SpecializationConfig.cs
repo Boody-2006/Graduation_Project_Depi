@@ -17,7 +17,7 @@ namespace MediCare.Data.Configurations
                     Name = "Neurology",
                     NameAr = "مخ وأعصاب",
                     Description = "Diagnosis and treatment of nervous system disorders.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-0.jpg"
                 },
                 new Specialization
                 {
@@ -25,7 +25,7 @@ namespace MediCare.Data.Configurations
                     Name = "Radiology",
                     NameAr = "أشعة",
                     Description = "Medical imaging and diagnostic radiology.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-1.jpg"
                 },
                 new Specialization
                 {
@@ -33,7 +33,7 @@ namespace MediCare.Data.Configurations
                     Name = "Neurosurgery",
                     NameAr = "جراحة مخ وأعصاب",
                     Description = "Surgical treatment of nervous system disorders.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-2.jpg"
                 },
                 new Specialization
                 {
@@ -41,7 +41,7 @@ namespace MediCare.Data.Configurations
                     Name = "Internal Medicine",
                     NameAr = "باطنة",
                     Description = "Diagnosis and treatment of internal diseases.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-3.jpg"
                 },
                 new Specialization
                 {
@@ -49,7 +49,7 @@ namespace MediCare.Data.Configurations
                     Name = "Cardiology",
                     NameAr = "قلب",
                     Description = "Diagnosis and treatment of heart diseases.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-4.jpg"
                 },
                 new Specialization
                 {
@@ -57,7 +57,7 @@ namespace MediCare.Data.Configurations
                     Name = "Pediatrics",
                     NameAr = "أطفال",
                     Description = "Medical care for children.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-5.jpg"
                 },
                 new Specialization
                 {
@@ -65,7 +65,7 @@ namespace MediCare.Data.Configurations
                     Name = "Dermatology",
                     NameAr = "جلدية",
                     Description = "Diagnosis and treatment of skin conditions.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-6.jpg"
                 },
                 new Specialization
                 {
@@ -73,7 +73,7 @@ namespace MediCare.Data.Configurations
                     Name = "Orthopedics",
                     NameAr = "عظام",
                     Description = "Diagnosis and treatment of bone and joint disorders.",
-                    ImageUrl = ""
+                    ImageUrl = "img/spec-7.jpg"
                 }
             );
         }

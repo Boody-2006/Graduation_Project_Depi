@@ -375,14 +375,14 @@ namespace MediCare.Data.Migrations
                 columns: new[] { "Id", "Description", "ImageUrl", "Name", "NameAr" },
                 values: new object[,]
                 {
-                    { 1, "Diagnosis and treatment of nervous system disorders.", "", "Neurology", "مخ وأعصاب" },
-                    { 2, "Medical imaging and diagnostic radiology.", "", "Radiology", "أشعة" },
-                    { 3, "Surgical treatment of nervous system disorders.", "", "Neurosurgery", "جراحة مخ وأعصاب" },
-                    { 4, "Diagnosis and treatment of internal diseases.", "", "Internal Medicine", "باطنة" },
-                    { 5, "Diagnosis and treatment of heart diseases.", "", "Cardiology", "قلب" },
-                    { 6, "Medical care for children.", "", "Pediatrics", "أطفال" },
-                    { 7, "Diagnosis and treatment of skin conditions.", "", "Dermatology", "جلدية" },
-                    { 8, "Diagnosis and treatment of bone and joint disorders.", "", "Orthopedics", "عظام" }
+                    { 1, "Diagnosis and treatment of nervous system disorders.", "img/spec-0.jpg", "Neurology", "مخ وأعصاب" },
+                    { 2, "Medical imaging and diagnostic radiology.", "img/spec-1.jpg", "Radiology", "أشعة" },
+                    { 3, "Surgical treatment of nervous system disorders.", "img/spec-2.jpg", "Neurosurgery", "جراحة مخ وأعصاب" },
+                    { 4, "Diagnosis and treatment of internal diseases.", "img/spec-3.jpg", "Internal Medicine", "باطنة" },
+                    { 5, "Diagnosis and treatment of heart diseases.", "img/spec-4.jpg", "Cardiology", "قلب" },
+                    { 6, "Medical care for children.", "img/spec-5.jpg", "Pediatrics", "أطفال" },
+                    { 7, "Diagnosis and treatment of skin conditions.", "img/spec-6.jpg", "Dermatology", "جلدية" },
+                    { 8, "Diagnosis and treatment of bone and joint disorders.", "img/spec-7.jpg", "Orthopedics", "عظام" }
                 });
 
             migrationBuilder.CreateIndex(

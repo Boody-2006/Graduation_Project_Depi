@@ -18,7 +18,11 @@ namespace MediCare.Data.Entities
         public double? AverageRating { get; set; }
 
         public int SpecializationId { get; set; }
+        public Specialization Specialization { get; set; }
 
         public ApplicationUser User { get; set; } = null!;
+        public List<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
+        public List<DoctorVacation> DoctorVacations { get; set; } = new List<DoctorVacation>();
+        public List<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

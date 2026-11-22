@@ -47,7 +47,7 @@ namespace MediCare.Data.Repositories
                 var time = availableAt.Value;
                 var availableDoctorIds = _context.Set<DoctorSchedule>()
                     .Where(schedule =>
-                        schedule.Day == day &&
+                        schedule.IsActive &&                         schedule.DayOfWeek == day &&
                         schedule.StartTime <= time &&
                         schedule.EndTime > time)
                     .Select(schedule => schedule.DoctorId);

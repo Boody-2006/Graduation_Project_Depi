@@ -10,7 +10,7 @@ namespace MediCare.Data.Repositories
             int? specializationId = null,
             string? city = null,
             DayOfWeek? availableDay = null,
-            TimeOnly? availableAt = null,
+            TimeSpan? availableAt = null,
             CancellationToken cancellationToken = default);
     }
 }

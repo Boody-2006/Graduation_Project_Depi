@@ -17,18 +17,22 @@ namespace MediCare.Data.Repositories
         }
 
         public async Task<IReadOnlyList<Doctor>> SearchAsync(
+            string? name = null,
             int? specializationId = null,
             string? city = null,
+            bool? isAvailable = null,
             DayOfWeek? availableDay = null,
             TimeSpan? availableAt = null,
             CancellationToken cancellationToken = default)
         {
-            if (availableDay.HasValue != availableAt.HasValue)
-            {
-                throw new ArgumentException("Provide both an availability day and time, or neither.");
-            }
-
             var query = GetApprovedDoctorsQuery();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var namePattern = $"%{EscapeLikePattern(name.Trim())}%";
+                query = query.Where(doctor => EF.Functions.Like(
+                    doctor.User.FirstName + " " + doctor.User.LastName, namePattern, "\\"));
+            }
 
             if (specializationId.HasValue)
             {
@@ -41,18 +45,34 @@ namespace MediCare.Data.Repositories
                 query = query.Where(doctor => EF.Functions.Like(doctor.City, cityPattern, "\\"));
             }
 
-            if (availableDay.HasValue && availableAt.HasValue)
+            // Available = the doctor has at least one active schedule.
+            if (isAvailable.HasValue)
             {
-                var day = availableDay.Value;
-                var time = availableAt.Value;
-                var availableDoctorIds = _context.Set<DoctorSchedule>()
-   .Where(schedule =>
-   schedule.IsActive &&
-    schedule.DayOfWeek == day &&
-    schedule.StartTime <= time &&
-    schedule.EndTime > time)
+                var scheduledDoctorIds = _context.Set<DoctorSchedule>()
+                    .Where(schedule => schedule.IsActive)
                     .Select(schedule => schedule.DoctorId);
 
+                query = isAvailable.Value
+                    ? query.Where(doctor => scheduledDoctorIds.Contains(doctor.Id))
+                    : query.Where(doctor => !scheduledDoctorIds.Contains(doctor.Id));
+            }
+
+            // Specific day (time is optional).
+            if (availableDay.HasValue)
+            {
+                var day = availableDay.Value;
+
+                var schedules = _context.Set<DoctorSchedule>()
+                    .Where(schedule => schedule.IsActive && schedule.DayOfWeek == day);
+
+                if (availableAt.HasValue)
+                {
+                    var time = availableAt.Value;
+                    schedules = schedules.Where(schedule =>
+                        schedule.StartTime <= time && schedule.EndTime > time);
+                }
+
+                var availableDoctorIds = schedules.Select(schedule => schedule.DoctorId);
                 query = query.Where(doctor => availableDoctorIds.Contains(doctor.Id));
             }
 
@@ -64,6 +84,7 @@ namespace MediCare.Data.Repositories
             return _context.Set<Doctor>()
                 .AsNoTracking()
                 .Include(doctor => doctor.Specialization)
+                .Include(doctor => doctor.User)
                 .Where(doctor => doctor.ApprovalStatus == "Approved");
         }
 

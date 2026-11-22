@@ -5,56 +5,156 @@
     var filter = ViewBag.Filter as MediCare.Services.ViewModels.DoctorFilterVM;
 }
 
-<section class="ph0">
+<section class="doc-hero">
     <div class="wrap">
         <h1>Find Your Doctor</h1>
-        <p class="mu">Choose the right specialist for your health.</p>
+        <p>Choose the right specialist for your health.</p>
     </div>
 </section>
 
-<section class="sec">
+<section class="sec" style="padding-top:0">
     <div class="wrap">
 
-        <form method="get" asp-action="Index" class="fb">
-            <input name="SearchTerm"
-                   value="@filter?.SearchTerm"
-                   placeholder="Search by doctor name..." />
+        <form method="get" asp-action="Index" class="doc-filter">
 
-            <input name="City"
-                   value="@filter?.City"
-                   placeholder="City..." />
+            <div class="doc-field">
+                <label for="f-search">Doctor name</label>
+                <input id="f-search"
+                       name="SearchTerm"
+                       value="@filter?.SearchTerm"
+                       placeholder="e.g. Hana" />
+            </div>
+
+            <div class="doc-field">
+                <label for="f-city">City</label>
+                <input id="f-city"
+                       name="City"
+                       value="@filter?.City"
+                       placeholder="e.g. Cairo" />
+            </div>
+
+            <div class="doc-field">
+                <label for="f-spec">Specialty</label>
+                <select id="f-spec" name="SpecializationId">
+                    <option value="">All specialties</option>
+                    <option value="1" selected="@(filter?.SpecializationId == 1)">Neurology</option>
+                    <option value="2" selected="@(filter?.SpecializationId == 2)">Radiology</option>
+                    <option value="3" selected="@(filter?.SpecializationId == 3)">Neurosurgery</option>
+                    <option value="4" selected="@(filter?.SpecializationId == 4)">Internal Medicine</option>
+                    <option value="5" selected="@(filter?.SpecializationId == 5)">Cardiology</option>
+                    <option value="6" selected="@(filter?.SpecializationId == 6)">Pediatrics</option>
+                    <option value="7" selected="@(filter?.SpecializationId == 7)">Dermatology</option>
+                    <option value="8" selected="@(filter?.SpecializationId == 8)">Orthopedics</option>
+                </select>
+            </div>
+
+            <div class="doc-field">
+                <label for="f-avail">Availability</label>
+                <select id="f-avail" name="IsAvailable">
+                    <option value="">Any</option>
+                    <option value="true" selected="@(filter?.IsAvailable == true)">Available</option>
+                    <option value="false" selected="@(filter?.IsAvailable == false)">Not available</option>
+                </select>
+            </div>
 
             <button class="pb" type="submit">Search</button>
             <a class="sm" asp-action="Index">Clear</a>
+
         </form>
 
-        <p class="mu">@Model.Count doctors found</p>
-
-        <div class="cards">
-            @foreach (var doctor in Model)
-            {
-                <div class="dc">
-                    <span class="ph dph">
-                        <img src="@doctor.ProfileImage"
-                             alt="@doctor.FullName" />
-                    </span>
-
-                    <div class="cb">
-                        <h3>@doctor.FullName</h3>
-                        <span class="mu">@doctor.SpecializationName</span>
-                        <span>@doctor.City</span>
-                        <span class="rt">
-                            ★ @(doctor.AverageRating?.ToString("0.0") ?? "No rating")
-                        </span>
-                        <b>@doctor.ConsultationFee EGP</b>
-                    </div>
-                </div>
-            }
+        <div class="doc-bar">
+            <span class="doc-count">
+                <b>@Model.Count</b>
+                @(Model.Count == 1 ? "doctor" : "doctors") found
+            </span>
         </div>
 
         @if (!Model.Any())
         {
-            <p class="mu">No doctors found. Try another search.</p>
+            <div class="doc-empty">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                </svg>
+
+                <h3>No doctors found</h3>
+                <p class="mu">Try another name, city or specialty.</p>
+                <a class="pb" asp-action="Index">Clear filters</a>
+            </div>
         }
+        else
+        {
+            <div class="doc-grid">
+
+                @foreach (var doctor in Model)
+                {
+                    var initial = doctor.FullName
+                        .Replace("Dr. ", "")
+                        .Trim()
+                        .FirstOrDefault();
+
+                    <article class="doc-card">
+
+                        <div class="doc-photo">
+
+                            <span class="doc-initial">@initial</span>
+
+                            @if (!string.IsNullOrWhiteSpace(doctor.ProfileImage))
+                            {
+                                <img src="@doctor.ProfileImage"
+                                     alt="@doctor.FullName"
+                                     loading="lazy"
+                                     onerror="this.remove()" />
+                            }
+
+                            <span class="doc-badge @(doctor.IsAvailable ? "on" : "off")">
+                                @(doctor.IsAvailable ? "Available" : "Not available")
+                            </span>
+
+                        </div>
+
+                        <div class="doc-body">
+
+                            <h3 class="doc-name">@doctor.FullName</h3>
+
+                            <span class="doc-spec">
+                                @doctor.SpecializationName
+                            </span>
+
+                            <span class="doc-meta">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 21s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z" />
+                                    <circle cx="12" cy="9" r="2.5" />
+                                </svg>
+                                @doctor.City
+                            </span>
+
+                            <span class="doc-meta">
+                                @if (doctor.AverageRating.HasValue)
+                                {
+                                    <span class="doc-rating">
+                                        ★ @doctor.AverageRating.Value.ToString("0.0")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>No ratings yet</span>
+                                }
+                            </span>
+
+                            <div class="doc-foot">
+                                <div class="doc-fee">
+                                    <small>Consultation fee</small>
+                                    <b>@doctor.ConsultationFee.ToString("0") EGP</b>
+                                </div>
+                            </div>
+
+                        </div>
+                    </article>
+                }
+
+            </div>
+        }
+
     </div>
 </section>

@@ -58,7 +58,7 @@ namespace MediCare.Services.Implementations
             var patient = new Patient
             {
                 Id = user.Id,
-                DateOfBirth = model.DateOfBirth
+                DateOfBirth = DateOnly.FromDateTime(model.DateOfBirth)
             };
             _dbContext.Patients.Add(patient);
             await _dbContext.SaveChangesAsync();

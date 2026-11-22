@@ -13,8 +13,15 @@ namespace MediCare.Web.Data
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-            // Ensure the database and tables are created automatically
-            await dbContext.Database.EnsureCreatedAsync();
+            // Ensure the database is created and migrations are applied automatically
+            try
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+            catch
+            {
+                await dbContext.Database.EnsureCreatedAsync();
+            }
 
             // 1. Seed Roles: Admin, Doctor, Patient
             string[] roles = { "Admin", "Doctor", "Patient" };

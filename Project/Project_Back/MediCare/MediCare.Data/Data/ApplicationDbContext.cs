@@ -15,6 +15,16 @@ namespace MediCare.Data.Data
 
         public DbSet<Patient> Patients { get; set; }
 
+        public DbSet<Appointment> Appointments { get; set; }
+        
+        public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
+        
+        public DbSet<DoctorVacation> DoctorVacations { get; set; }
+        
+        public DbSet<MedicalRecord> MedicalRecords { get; set; }
+        
+        public DbSet<Specialization> Specializations { get; set; }
+
         public DbSet<Doctor> Doctors { get; set; }
 
         public DbSet<Assistant> Assistants { get; set; }
@@ -51,6 +61,9 @@ namespace MediCare.Data.Data
                 .HasForeignKey(u => u.AddressId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(u => u.IsActive)
+                .HasDefaultValue(true);
         }
     }
 }

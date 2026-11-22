@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261121172750_initCreate")]
+    [Migration("20261122115932_initCreate")]
     partial class initCreate
     {
         /// <inheritdoc />
@@ -56,6 +56,11 @@ namespace MediCare.Data.Migrations
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -124,11 +129,9 @@ namespace MediCare.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CancelReason")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CancelledBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -139,6 +142,7 @@ namespace MediCare.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Fee")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Notes")
@@ -176,7 +180,7 @@ namespace MediCare.Data.Migrations
                         .IsUnique()
                         .HasFilter("[RescheduledFromId] IS NOT NULL");
 
-                    b.ToTable("Appointment");
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Assistant", b =>
@@ -209,6 +213,7 @@ namespace MediCare.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ConsultationFee")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("RejectionReason")
@@ -255,7 +260,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorSchedule");
+                    b.ToTable("DoctorSchedules");
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.DoctorVacation", b =>
@@ -283,7 +288,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorVacation");
+                    b.ToTable("DoctorVacations");
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.HomeAddress", b =>
@@ -322,15 +327,12 @@ namespace MediCare.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Diagnosis")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Symptoms")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TreatmentNotes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -338,7 +340,7 @@ namespace MediCare.Data.Migrations
                     b.HasIndex("AppointmentId")
                         .IsUnique();
 
-                    b.ToTable("MedicalRecord");
+                    b.ToTable("MedicalRecords");
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Patient", b =>
@@ -352,8 +354,8 @@ namespace MediCare.Data.Migrations
                     b.Property<string>("BloodType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("MedicalHistory")
                         .HasColumnType("nvarchar(max)");
@@ -389,7 +391,73 @@ namespace MediCare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialization");
+                    b.ToTable("Specializations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Diagnosis and treatment of nervous system disorders.",
+                            ImageUrl = "",
+                            Name = "Neurology",
+                            NameAr = "مخ وأعصاب"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Medical imaging and diagnostic radiology.",
+                            ImageUrl = "",
+                            Name = "Radiology",
+                            NameAr = "أشعة"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Surgical treatment of nervous system disorders.",
+                            ImageUrl = "",
+                            Name = "Neurosurgery",
+                            NameAr = "جراحة مخ وأعصاب"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Diagnosis and treatment of internal diseases.",
+                            ImageUrl = "",
+                            Name = "Internal Medicine",
+                            NameAr = "باطنة"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Diagnosis and treatment of heart diseases.",
+                            ImageUrl = "",
+                            Name = "Cardiology",
+                            NameAr = "قلب"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Medical care for children.",
+                            ImageUrl = "",
+                            Name = "Pediatrics",
+                            NameAr = "أطفال"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Diagnosis and treatment of skin conditions.",
+                            ImageUrl = "",
+                            Name = "Dermatology",
+                            NameAr = "جلدية"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Diagnosis and treatment of bone and joint disorders.",
+                            ImageUrl = "",
+                            Name = "Orthopedics",
+                            NameAr = "عظام"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

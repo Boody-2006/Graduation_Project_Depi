@@ -8,8 +8,8 @@
         public string Type { get; set; }
         public string Status { get; set; }
         public string? Notes { get; set; }
-        public string CancelReason { get; set; }
-        public string CancelledBy { get; set; }
+        public string? CancelReason { get; set; }
+        public string? CancelledBy { get; set; }
         public decimal Fee { get; set; }
         public string PaymentStatus { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

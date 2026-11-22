@@ -10,6 +10,9 @@ namespace MediCare.Data.Configurations
         {
             builder.HasKey(a => a.Id);
 
+            builder.Property(a => a.Fee)
+                   .HasPrecision(18, 2);
+
             builder.HasOne(a => a.Doctor)
                 .WithMany(d => d.Appointments)
                 .HasForeignKey(a => a.DoctorId)

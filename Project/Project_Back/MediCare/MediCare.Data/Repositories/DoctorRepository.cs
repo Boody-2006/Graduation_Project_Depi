@@ -20,7 +20,7 @@ namespace MediCare.Data.Repositories
             int? specializationId = null,
             string? city = null,
             DayOfWeek? availableDay = null,
-            TimeOnly? availableAt = null,
+            TimeSpan? availableAt = null,
             CancellationToken cancellationToken = default)
         {
             if (availableDay.HasValue != availableAt.HasValue)
@@ -46,10 +46,11 @@ namespace MediCare.Data.Repositories
                 var day = availableDay.Value;
                 var time = availableAt.Value;
                 var availableDoctorIds = _context.Set<DoctorSchedule>()
-                    .Where(schedule =>
-                        schedule.IsActive &&                         schedule.DayOfWeek == day &&
-                        schedule.StartTime <= time &&
-                        schedule.EndTime > time)
+   .Where(schedule =>
+   schedule.IsActive &&
+    schedule.DayOfWeek == day &&
+    schedule.StartTime <= time &&
+    schedule.EndTime > time)
                     .Select(schedule => schedule.DoctorId);
 
                 query = query.Where(doctor => availableDoctorIds.Contains(doctor.Id));

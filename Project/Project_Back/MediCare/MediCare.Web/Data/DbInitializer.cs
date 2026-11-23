@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MediCare.Data.Data;
 using MediCare.Data.Entities;
 
@@ -12,18 +13,12 @@ namespace MediCare.Web.Data
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-            // Ensure the database is created and migrations are applied automatically
-            try
-            {
-                await dbContext.Database.MigrateAsync();
-            }
-            catch
-            {
-                await dbContext.Database.EnsureCreatedAsync();
-            }
+            // 1. Apply any pending EF Core Migrations
+            await dbContext.Database.MigrateAsync();
 
-            // 1. Seed Roles: Admin, Doctor, Patient
+            // 2. Seed Roles: Admin, Doctor, Patient
             string[] roles = { "Admin", "Doctor", "Patient" };
             foreach (var role in roles)
             {
@@ -33,9 +28,9 @@ namespace MediCare.Web.Data
                 }
             }
 
-            // 2. Seed Default Admin Account (Admin represents Assistant in the ERD)
+            // 3. Seed Default Admin Account (Admin represents Assistant in the ERD)
             const string adminEmail = "admin@medicare.com";
-            const string defaultAdminPassword = "Admin@123456";
+            var defaultAdminPassword = configuration["Seed:AdminPassword"] ?? "Admin@123456";
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MediCare.Data;
 using MediCare.Data.Data;
 using MediCare.Data.Entities;
 using MediCare.Services.Interfaces;
@@ -14,6 +15,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// Register Repositories and UnitOfWork from MediCare.Data
+builder.Services.AddMediCareRepositories();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

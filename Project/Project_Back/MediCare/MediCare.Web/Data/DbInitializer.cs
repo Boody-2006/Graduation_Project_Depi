@@ -30,8 +30,14 @@ namespace MediCare.Web.Data
 
             // 3. Seed Default Admin Account (Admin represents Assistant in the ERD)
             const string adminEmail = "admin@medicare.com";
-            var configPassword = configuration["Seed:AdminPassword"];
-            var defaultAdminPassword = !string.IsNullOrWhiteSpace(configPassword) ? configPassword : "Admin@123456";
+            var adminPassword = configuration["Seed:AdminPassword"];
+
+            if (string.IsNullOrWhiteSpace(adminPassword))
+            {
+                var logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger("DbInitializer");
+                logger?.LogWarning("Admin account seeding skipped: 'Seed:AdminPassword' configuration is missing or empty. To seed the default administrator account, configure 'Seed:AdminPassword' via User Secrets or Environment Variables.");
+                return;
+            }
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
@@ -46,7 +52,7 @@ namespace MediCare.Web.Data
                     CreatedAt = DateTime.UtcNow
                 };
 
-                var createResult = await userManager.CreateAsync(adminUser, defaultAdminPassword);
+                var createResult = await userManager.CreateAsync(adminUser, adminPassword);
                 if (createResult.Succeeded)
                 {
                     await userManager.AddToRoleAsync(adminUser, "Admin");

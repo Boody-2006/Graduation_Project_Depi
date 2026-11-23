@@ -156,5 +156,13 @@ namespace MediCare.Web.Controllers
         {
             return View();
         }
+
+        // GET: /Account/AdminOnly (Admin-protected endpoint to verify RBAC & AccessDenied redirection)
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminOnly()
+        {
+            return Content("Admin Access Granted: You have verified Admin role authorization.");
+        }
     }
 }

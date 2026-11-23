@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Identity
+@using MediCare.Data.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav align-items-center">
+@if (SignInManager.IsSignedIn(User))
+{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var displayName = currentUser != null && !string.IsNullOrWhiteSpace(currentUser.FirstName)
+        ? $"{currentUser.FirstName} {currentUser.LastName}".Trim()
+        : (User.Identity?.Name ?? "User");
+
+    <li class="nav-item d-flex align-items-center me-3">
+        <span class="navbar-text text-dark fw-semibold">
+            Hello, @displayName!
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="badge bg-danger ms-1 auth-badge-role">Admin</span>
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                <span class="badge bg-success ms-1 auth-badge-role">Doctor</span>
+            }
+            else if (User.IsInRole("Patient"))
+            {
+                <span class="badge bg-info text-dark ms-1 auth-badge-role">Patient</span>
+            }
+        </span>
+    </li>
+    <li class="nav-item">
+        <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Log Out / خروج</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item dropdown me-2">
+        <a class="nav-link dropdown-toggle text-dark fw-semibold" href="#" id="registerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Register / حساب جديد
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2" aria-labelledby="registerDropdown">
+            <li>
+                <a class="dropdown-item py-2 rounded-2" asp-controller="Account" asp-action="RegisterPatient">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person me-1 text-primary" viewBox="0 0 16 16">
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
+                    </svg>
+                    Patient Registration / مريض
+                </a>
+            </li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+                <a class="dropdown-item py-2 rounded-2" asp-controller="Account" asp-action="RegisterDoctor">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-pulse me-1 text-success" viewBox="0 0 16 16">
+                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053.918 3.995.78 5.323 1.508 7H.43c-2.11 0-3.09 2.456-1.644 3.957l4.088 4.24a1.5 1.5 0 0 0 2.164.04l4.004-4.156A2.49 2.49 0 0 0 14.57 7h-1.078c.728-1.677.59-3.005.108-3.947C12.486.878 9.4.28 7.717 2.01L8 2.748ZM2.14 4.353C2.87 2.923 5.06 2.5 6.5 4.018l.8.828.8-.828C9.54 2.5 11.73 2.923 12.46 4.353c.47.92.51 2.032.04 3.647h-1.39l-2.73 2.834a.5.5 0 0 1-.72-.002L5.8 8H2.1c-.47-1.615-.43-2.727.04-3.647Z"/>
+                    </svg>
+                    Doctor Registration / طبيب
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-item">
+        <a class="btn btn-auth-primary btn-sm px-3 shadow-sm rounded-pill" asp-controller="Account" asp-action="Login">
+            Log In / دخول
+        </a>
+    </li>
+}
+</ul>

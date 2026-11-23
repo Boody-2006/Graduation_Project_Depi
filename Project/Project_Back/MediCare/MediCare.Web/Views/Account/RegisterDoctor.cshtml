@@ -1,0 +1,145 @@
+@model RegisterDoctorViewModel
+
+@{
+    ViewData["Title"] = "Doctor Registration / تسجيل طبيب";
+}
+
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-9 col-lg-7">
+        <div class="auth-card">
+            <div class="auth-header doctor-theme">
+                <div class="auth-icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="m8 0 1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864 8 0z"/>
+                        <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
+                    </svg>
+                </div>
+                <h4 class="auth-title">Doctor Registration / انضم كطبيب</h4>
+                <div class="auth-subtitle">Join the MediCare medical panel</div>
+            </div>
+            <div class="auth-body">
+
+                <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mb-4" role="alert">
+                    <div class="me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill text-info" viewBox="0 0 16 16">
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>Notice / تنبيه:</strong>
+                        All doctor applications are reviewed by the clinic administration. Your account will have <strong>Pending</strong> status until approved.
+                        <div class="small text-muted mt-1">تخضع جميع طلبات الأطباء للمراجعة والاعتماد من قبل إدارة العيادة قبل تفعيل تسجيل الدخول.</div>
+                    </div>
+                </div>
+
+                <form asp-action="RegisterDoctor" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 shadow-sm" role="alert"></div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label-custom"></label>
+                            <input asp-for="FirstName" class="form-control form-control-custom" placeholder="e.g. Tamer / تامر" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label-custom"></label>
+                            <input asp-for="LastName" class="form-control form-control-custom" placeholder="e.g. Salah / صلاح" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label-custom"></label>
+                            <input asp-for="Email" class="form-control form-control-custom" placeholder="doctor@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label-custom"></label>
+                            <input asp-for="PhoneNumber" class="form-control form-control-custom" placeholder="01012345678" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label-custom"></label>
+                            <select asp-for="Gender" class="form-select form-select-custom">
+                                <option value="Male">Male / ذكر</option>
+                                <option value="Female">Female / أنثى</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SpecializationId" class="form-label-custom"></label>
+                            <select asp-for="SpecializationId" class="form-select form-select-custom">
+                                <option value="">-- Choose Specialty / اختر التخصص --</option>
+                                <option value="1">Neurology / مخ وأعصاب</option>
+                                <option value="2">Radiology / أشعة</option>
+                                <option value="3">Neurosurgery / جراحة مخ وأعصاب</option>
+                                <option value="4">Internal Medicine / باطنة</option>
+                                <option value="5">Cardiology / قلب</option>
+                                <option value="6">Pediatrics / أطفال</option>
+                                <option value="7">Dermatology / جلدية</option>
+                                <option value="8">Orthopedics / عظام</option>
+                            </select>
+                            <span asp-validation-for="SpecializationId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="ConsultationFee" class="form-label-custom"></label>
+                            <div class="input-group">
+                                <input asp-for="ConsultationFee" class="form-control form-control-custom" type="number" step="10" placeholder="e.g. 400" />
+                                <span class="input-group-text bg-light text-muted">EGP</span>
+                            </div>
+                            <span asp-validation-for="ConsultationFee" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label-custom"></label>
+                            <input asp-for="City" class="form-control form-control-custom" placeholder="e.g. Cairo / القاهرة" />
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label-custom"></label>
+                        <input asp-for="Address" class="form-control form-control-custom" placeholder="Clinic address (optional) / عنوان العيادة بالتفصيل" />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label-custom"></label>
+                            <input asp-for="Password" class="form-control form-control-custom" placeholder="••••••••" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label-custom"></label>
+                            <input asp-for="ConfirmPassword" class="form-control form-control-custom" placeholder="••••••••" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-auth-doctor">
+                            Submit Doctor Application / إرسال طلب الانضمام
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-muted small">Already registered? / مسجل مسبقاً؟ </span>
+                        <a asp-action="Login" class="text-success fw-semibold text-decoration-none">Sign In / تسجيل الدخول</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

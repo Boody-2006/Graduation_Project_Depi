@@ -3,28 +3,38 @@
 ## Authentication & Role-Based Access Control (RBAC)
 
 ### 1. Default Roles
-The system automatically provisions three main roles upon startup:
+The system automatically provisions three main roles upon application startup:
 - `Admin`: Full management access (represents Clinic Assistant in ERD).
 - `Doctor`: Doctor account (subject to administrative approval gate).
 - `Patient`: Patient self-service registration and booking.
 
 ---
 
-### 2. Default Administrator Account
+### 2. Default Administrator Account Configuration
 An initial administrator account is automatically seeded if it does not already exist:
 - **Email:** `admin@medicare.com`
-- **Password:** Configured via `Project/Project_Back/MediCare/MediCare.Web/appsettings.json` under `Seed:AdminPassword`. Default: `Admin@123456`.
+- **Password:** Configured via `Seed:AdminPassword`.
 
-#### How to change the Default Admin Password:
-In `appsettings.json` (or `appsettings.Development.json`):
-```json
-{
-  "Seed": {
-    "AdminPassword": "YourStrongPasswordHere@2026"
-  }
-}
-```
-*Note: If the administrator account is already created in the database, changing the configuration will not override the existing hashed password. To reset or use a new password, either update the user in the database or initialize on a fresh database.*
+#### Setting the Admin Password Locally:
+For security best practices, sensitive passwords should not be committed to source control. You can configure the seed password locally using either:
+
+1. **.NET Secret Manager (User Secrets) - Recommended:**
+   ```bash
+   cd Project/Project_Back/MediCare/MediCare.Web
+   dotnet user-secrets set "Seed:AdminPassword" "<YourStrongPasswordHere>"
+   ```
+
+2. **Environment Variable:**
+   ```bash
+   # Windows PowerShell
+   $env:Seed__AdminPassword = "<YourStrongPasswordHere>"
+
+   # Windows CMD
+   set Seed__AdminPassword=<YourStrongPasswordHere>
+   ```
+
+3. **Development Local Fallback:**
+   If `Seed:AdminPassword` is not set or left empty, the development environment defaults to a fallback development password (`Admin@123456`).
 
 ---
 

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using MediCare.Data.Data;
 using MediCare.Data.Entities;
+using MediCare.Data.UnitOfWork;
 using MediCare.Services.Interfaces;
 using MediCare.Services.ViewModels;
 
@@ -12,18 +11,18 @@ namespace MediCare.Services.Implementations
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext dbContext)
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<AuthResult> RegisterPatientAsync(RegisterPatientViewModel model)
@@ -54,14 +53,14 @@ namespace MediCare.Services.Implementations
             // Assign Patient role
             await _userManager.AddToRoleAsync(user, "Patient");
 
-            // Add Patient entity
+            // Add Patient entity via UnitOfWork
             var patient = new Patient
             {
                 Id = user.Id,
                 DateOfBirth = DateOnly.FromDateTime(model.DateOfBirth)
             };
-            _dbContext.Patients.Add(patient);
-            await _dbContext.SaveChangesAsync();
+            await _unitOfWork.Patients.AddAsync(patient);
+            await _unitOfWork.SaveChangesAsync();
 
             // Sign in the newly registered patient automatically
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -97,7 +96,7 @@ namespace MediCare.Services.Implementations
             // Assign Doctor role
             await _userManager.AddToRoleAsync(user, "Doctor");
 
-            // Add Doctor entity with Pending status by default
+            // Add Doctor entity with Pending status by default via UnitOfWork
             var doctor = new Doctor
             {
                 Id = user.Id,
@@ -107,8 +106,8 @@ namespace MediCare.Services.Implementations
                 Address = model.Address?.Trim(),
                 ApprovalStatus = "Pending"
             };
-            _dbContext.Doctors.Add(doctor);
-            await _dbContext.SaveChangesAsync();
+            await _unitOfWork.Doctors.AddAsync(doctor);
+            await _unitOfWork.SaveChangesAsync();
 
             // Doctor must NOT be signed in; must await Admin/Assistant approval
             return AuthResult.PendingDoctor();
@@ -128,11 +127,11 @@ namespace MediCare.Services.Implementations
                 return AuthResult.Failed("Invalid email or password / البريد الإلكتروني أو كلمة المرور غير صحيحة.");
             }
 
-            // If user is Doctor, enforce approval verification
+            // If user is Doctor, enforce approval verification via UnitOfWork
             var isDoctor = await _userManager.IsInRoleAsync(user, "Doctor");
             if (isDoctor)
             {
-                var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.Id == user.Id);
+                var doctor = await _unitOfWork.Doctors.GetByIdAsync(user.Id);
                 if (doctor == null || string.Equals(doctor.ApprovalStatus, "Pending", StringComparison.OrdinalIgnoreCase))
                 {
                     return AuthResult.PendingDoctor();

@@ -1,48 +1,99 @@
-﻿
+﻿@*
+    _Layout.cshtml
+    The shared frame (master page) of every page: header, footer and the CSS/fonts.
+    Each View is placed inside @RenderBody(), and sets its own title with ViewData["Title"].
+*@
+@{
+    // Which controller is open? Used to highlight the active link in the navbar.
+    var current = ViewContext.RouteData.Values["controller"]?.ToString();
+}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>@ViewData["Title"] - MediCare</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    @* Fonts: Fraunces for headings, IBM Plex Sans for body text *@
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    @* medicare.css = base styles, medicare-pro.css = the professional design layer (must come second).
+       asp-append-version stops the browser from showing an old cached copy after a change. *@
     <link rel="stylesheet" href="~/css/medicare.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/medicare-pro.css" asp-append-version="true" />
+
+    <script>
+        // If any image fails to load, hide it so the fallback behind it (colour or initial)
+        // is shown instead of a broken-image icon. One handler for the whole site.
+        document.addEventListener("error", function (e) {
+            if (e.target && e.target.tagName === "IMG") { e.target.style.display = "none"; }
+        }, true);
+    </script>
 </head>
 <body>
+
+    @* ===== Header ===== *@
     <header class="hd">
-        <a class="lg" asp-controller="Home" asp-action="Index">
-            MediCare
-        </a>
+        <div class="wrap hd-in">
+            <a class="lg" asp-controller="Home" asp-action="Index">
+                <svg width="30" height="30" viewBox="0 0 28 28" aria-hidden="true">
+                    <circle cx="11" cy="14" r="9" fill="currentColor" opacity=".35" />
+                    <circle cx="17" cy="14" r="9" fill="currentColor" />
+                </svg>
+                MediCare
+            </a>
 
-        <nav class="nv">
-            <a asp-controller="Home" asp-action="Index">Home</a>
-            <a asp-controller="Doctors" asp-action="Index">Doctors</a>
-        </nav>
+            <nav class="nv">
+                <a class="@(current == "Home" ? "on" : "")" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="@(current == "Doctors" ? "on" : "")" asp-controller="Doctors" asp-action="Index">Doctors</a>
+            </nav>
 
-        <div>
+            @* Login/Register pages are built in Person 5's task (AccountController) *@
             <a class="sm" asp-controller="Account" asp-action="Login">Sign in</a>
             <a class="pb" asp-controller="Account" asp-action="Register">Register</a>
         </div>
     </header>
 
+    @* ===== Page content ===== *@
     <main>
         @RenderBody()
     </main>
 
+    @* ===== Footer ===== *@
     <footer class="ft">
-        <div class="wrap fg">
-            <div>
-                <div class="lg">MediCare</div>
-                <p class="mu">Care that keeps its appointments</p>
+        <div class="wrap">
+            <div class="ft-grid">
+                <div>
+                    <div class="lg">
+                        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+                            <circle cx="11" cy="14" r="9" fill="currentColor" opacity=".35" />
+                            <circle cx="17" cy="14" r="9" fill="currentColor" />
+                        </svg>
+                        MediCare
+                    </div>
+                    <p class="mu" style="max-width:34ch;margin:0">Care that keeps its appointments. Find a specialist, book online and keep your records in one place.</p>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <a asp-controller="Home" asp-action="Index">Home</a>
+                    <a asp-controller="Doctors" asp-action="Index">Find a doctor</a>
+                </div>
+                <div>
+                    <h4>Account</h4>
+                    <a asp-controller="Account" asp-action="Login">Sign in</a>
+                    <a asp-controller="Account" asp-action="Register">Register</a>
+                </div>
             </div>
-
-            <div class="mu">
-                &copy; 2026 MediCare. All rights reserved.
+            <div class="ft-bot">
+                <span>&copy; 2026 MediCare. All rights reserved.</span>
+                <span>Graduation project - DEPI</span>
             </div>
         </div>
     </footer>
 
+    @* Optional place for page-specific scripts *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

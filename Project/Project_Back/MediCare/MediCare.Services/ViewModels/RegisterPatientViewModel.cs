@@ -5,36 +5,44 @@ namespace MediCare.Services.ViewModels
     public class RegisterPatientViewModel
     {
         [Required(ErrorMessage = "First name is required / الاسم الأول مطلوب")]
-        [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters / الاسم لا يمكن أن يتجاوز 50 حرفاً")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters / الاسم بين 2 و50 حرفاً")]
+        [RegularExpression(@"^[\p{L}\s\-']+$", ErrorMessage = "First name can only contain letters / الاسم يجب أن يحتوي على حروف فقط")]
         [Display(Name = "First Name / الاسم الأول")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last name is required / اسم العائلة مطلوب")]
-        [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters / اسم العائلة لا يمكن أن يتجاوز 50 حرفاً")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters / اسم العائلة بين 2 و50 حرفاً")]
+        [RegularExpression(@"^[\p{L}\s\-']+$", ErrorMessage = "Last name can only contain letters / اسم العائلة يجب أن يحتوي على حروف فقط")]
         [Display(Name = "Last Name / اسم العائلة")]
         public string LastName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Email is required / البريد الإلكتروني مطلوب")]
         [EmailAddress(ErrorMessage = "Invalid email format / صيغة البريد غير صحيحة")]
+        [StringLength(150, ErrorMessage = "Email cannot exceed 150 characters")]
         [Display(Name = "Email Address / البريد الإلكتروني")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Phone number is required / رقم الهاتف مطلوب")]
-        [Phone(ErrorMessage = "Invalid phone number / رقم الهاتف غير صالح")]
+        [RegularExpression(@"^(\+20|0)?1[0125]\d{8}$",
+            ErrorMessage = "Enter a valid Egyptian phone number (e.g. 01012345678) / أدخل رقم هاتف مصري صحيح")]
         [Display(Name = "Phone Number / رقم الهاتف")]
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Gender is required / الجنس مطلوب")]
+        [RegularExpression("^(Male|Female)$", ErrorMessage = "Invalid gender value / قيمة الجنس غير صحيحة")]
         [Display(Name = "Gender / الجنس")]
         public string Gender { get; set; } = "Male";
 
         [Required(ErrorMessage = "Date of birth is required / تاريخ الميلاد مطلوب")]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth / تاريخ الميلاد")]
-        public DateTime DateOfBirth { get; set; } = DateTime.Today.AddYears(-20);
+        [MinimumAge(5, ErrorMessage = "Patient must be at least 5 years old / يجب أن يكون المريض أكبر من 5 سنوات")]
+        [MaximumAge(120, ErrorMessage = "Please enter a valid date of birth / أدخل تاريخ ميلاد صحيح")]
+        public DateTime DateOfBirth { get; set; } = DateTime.Today.AddYears(-25);
 
         [Required(ErrorMessage = "Password is required / كلمة المرور مطلوبة")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters / كلمة المرور يجب ألا تقل عن 6 أحرف")]
+        [StringLength(100, MinimumLength = 8,
+            ErrorMessage = "Password must be between 8 and 100 characters / كلمة المرور بين 8 و100 حرف")]
         [DataType(DataType.Password)]
         [Display(Name = "Password / كلمة المرور")]
         public string Password { get; set; } = string.Empty;

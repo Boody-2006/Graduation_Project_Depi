@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MediCare.Services.Interfaces;
 using MediCare.Services.ViewModels;
 
@@ -9,9 +10,9 @@ namespace MediCare.Web.Controllers
     {
         private readonly IAuthService _authService;
 
-        public AccountController(IAuthService _authService)
+        public AccountController(IAuthService authService)
         {
-            this._authService = _authService;
+            _authService = authService;
         }
 
         // GET: /Account/Login
@@ -106,13 +107,14 @@ namespace MediCare.Web.Controllers
 
         // GET: /Account/RegisterDoctor
         [HttpGet]
-        public IActionResult RegisterDoctor()
+        public async Task<IActionResult> RegisterDoctor()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
 
+            await PopulateSpecializationsViewBagAsync();
             return View(new RegisterDoctorViewModel());
         }
 
@@ -123,6 +125,7 @@ namespace MediCare.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await PopulateSpecializationsViewBagAsync();
                 return View(model);
             }
 
@@ -133,6 +136,7 @@ namespace MediCare.Web.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error);
                 }
+                await PopulateSpecializationsViewBagAsync();
                 return View(model);
             }
 
@@ -163,6 +167,33 @@ namespace MediCare.Web.Controllers
         public IActionResult AdminOnly()
         {
             return Content("Admin Access Granted: You have verified Admin role authorization.");
+        }
+
+        private async Task PopulateSpecializationsViewBagAsync()
+        {
+            var specializations = await _authService.GetSpecializationsAsync();
+            if (specializations != null && specializations.Any())
+            {
+                ViewBag.Specializations = specializations.Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = $"{s.Name} / {s.NameAr}"
+                }).ToList();
+            }
+            else
+            {
+                ViewBag.Specializations = new List<SelectListItem>
+                {
+                    new("Neurology / مخ وأعصاب", "1"),
+                    new("Radiology / أشعة", "2"),
+                    new("Neurosurgery / جراحة مخ وأعصاب", "3"),
+                    new("Internal Medicine / باطنة", "4"),
+                    new("Cardiology / قلب", "5"),
+                    new("Pediatrics / أطفال", "6"),
+                    new("Dermatology / جلدية", "7"),
+                    new("Orthopedics / عظام", "8")
+                };
+            }
         }
     }
 }

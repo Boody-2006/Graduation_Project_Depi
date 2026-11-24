@@ -142,3 +142,33 @@ body {
   border-radius: 6px;
   font-weight: 600;
 }
+
+/* Password Toggle & Input Groups */
+.input-group-custom .btn-toggle-password {
+  border: 1.5px solid #cbd5e1;
+  border-left: none;
+  background-color: #ffffff;
+  color: #64748b;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.input-group-custom .btn-toggle-password:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.input-group-custom .form-control-custom {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* Password Helper Text & Tooltips */
+.password-requirements {
+  font-size: 0.775rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}

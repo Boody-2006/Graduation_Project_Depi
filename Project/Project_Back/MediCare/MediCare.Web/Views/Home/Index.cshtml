@@ -1,8 +1,190 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@*
+    Home/Index.cshtml  (the landing page)
+    Sections: full-width hero, services, specialties, numbers, AI MRI, FAQ, call to action.
+    The specialty ids (1-8) match the dropdown on the Doctors page, so a click filters the list.
+    Everything here is static content, so no model is needed.
+*@
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@* ===== Hero: big full-width photo (wwwroot/img/hero.jpg) with the text on top ===== *@
+<section class="hf">
+    <img class="hf-bg" src="@Url.Content("~/img/hero.jpg")" alt="" />
+
+    <div class="wrap">
+        <div class="hf-copy">
+            <span class="eyebrow"><i></i> Online clinic booking</span>
+            <h1>Your health, <em>scheduled</em> with care</h1>
+            <p class="lead">
+                Find the right specialist, book in seconds and keep every record,
+                prescription and scan in one secure place.
+            </p>
+
+            <div class="row">
+                <a class="pb" asp-controller="Doctors" asp-action="Index">Book an appointment</a>
+                <a class="sm ghost" asp-controller="Account" asp-action="RegisterPatient">Register</a>
+            </div>
+
+            <ul class="hf-trust">
+                <li>Approved doctors only</li>
+                <li>No double bookings</li>
+                <li>Records in one place</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+@* ===== Services: banner with cards overlapping it ===== *@
+<section class="svc">
+    <div class="svc-banner">
+        <img src="@Url.Content("~/img/about.jpg")" alt="" />
+        <div class="wrap">
+            <span class="kicker">What we offer</span>
+            <h2>Our Services</h2>
+        </div>
+    </div>
+
+    <div class="wrap svc-cards">
+        <div class="svc-card">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg></span>
+            <h3>Find a Doctor</h3>
+            <p class="mu">Search by specialty, city and availability.</p>
+        </div>
+        <div class="svc-card">
+            <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg></span>
+            <h3>Online Booking</h3>
+            <p class="mu">Choose a free slot. Double bookings are blocked.</p>
+        </div>
+        <div class="svc-card">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4M9 13h6M9 17h6" /></svg></span>
+            <h3>Records and Prescriptions</h3>
+            <p class="mu">Visits and prescriptions in one place, ready to print.</p>
+        </div>
+        <div class="svc-card">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v16M8 6a3 3 0 00-3 3 3 3 0 00-1 5 3 3 0 004 4h4M16 6a3 3 0 013 3 3 3 0 011 5 3 3 0 01-4 4h-4" /></svg></span>
+            <h3>AI MRI Screening</h3>
+            <p class="mu">Brain MRI classification with a confidence score.</p>
+        </div>
+    </div>
+</section>
+
+@* ===== Specialties ===== *@
+<section class="sec">
+    <div class="wrap">
+        <div class="sh2">
+            <div>
+                <span class="kicker">Specialties</span>
+                <h2>Browse by specialty</h2>
+                <p class="mu">Pick the field you need and see the doctors available.</p>
+            </div>
+            <a class="sm" asp-controller="Doctors" asp-action="Index">All doctors &rarr;</a>
+        </div>
+
+        <div class="grid4">
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="1">
+                <img src="@Url.Content("~/img/spec-0.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Neurology</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="2">
+                <img src="@Url.Content("~/img/spec-1.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Radiology</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="3">
+                <img src="@Url.Content("~/img/spec-2.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Neurosurgery</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="4">
+                <img src="@Url.Content("~/img/spec-3.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Internal Medicine</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="5">
+                <img src="@Url.Content("~/img/spec-4.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Cardiology</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="6">
+                <img src="@Url.Content("~/img/spec-5.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Pediatrics</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="7">
+                <img src="@Url.Content("~/img/spec-6.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Dermatology</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+            <a class="spc" asp-controller="Doctors" asp-action="Index" asp-route-SpecializationId="8">
+                <img src="@Url.Content("~/img/spec-7.jpg")" alt="" loading="lazy" />
+                <div class="spc-in"><div><b>Orthopedics</b><small>View doctors</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+            </a>
+        </div>
+    </div>
+</section>
+
+@* ===== Numbers ===== *@
+<section class="sec" style="padding-top:0">
+    <div class="wrap">
+        <div class="stats-in">
+            <div><b>8</b><span>Medical specialties</span></div>
+            <div><b>24/7</b><span>Online booking</span></div>
+            <div><b>1</b><span>Place for all your records</span></div>
+            <div><b>AI</b><span>Brain MRI screening</span></div>
+        </div>
+    </div>
+</section>
+
+@* ===== AI MRI ===== *@
+<section class="sec ai">
+    <div class="wrap ai-grid">
+        <div class="ai-img">
+            <img src="@Url.Content("~/img/ai.jpg")" alt="Brain MRI scan" loading="lazy" />
+        </div>
+        <div>
+            <span class="kicker">AI-assisted</span>
+            <h2>Brain MRI screening, built in</h2>
+            <p>Doctors upload an MRI scan and receive a classification with a confidence score to support their review.</p>
+            <ul>
+                <li>Glioma, meningioma, pituitary or no tumor</li>
+                <li>A confidence score with every result</li>
+                <li>Supports, never replaces, the radiologist</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+@* ===== FAQ ===== *@
+<section class="sec">
+    <div class="wrap faq-wrap">
+        <div class="sh2" style="display:block;text-align:center">
+            <span class="kicker">FAQ</span>
+            <h2>Frequently asked questions</h2>
+        </div>
+
+        <div class="faq">
+            <details>
+                <summary>How do I book an appointment?</summary>
+                <p class="mu">Create a patient account, open Doctors, pick a free time slot and confirm.</p>
+            </details>
+            <details>
+                <summary>Can I cancel or reschedule?</summary>
+                <p class="mu">Yes, from Appointments, before the visit.</p>
+            </details>
+            <details>
+                <summary>Where are my prescriptions?</summary>
+                <p class="mu">Under Records, ready to print at any time.</p>
+            </details>
+            <details>
+                <summary>How do doctors join?</summary>
+                <p class="mu">Doctors register and the clinic assistant approves the account.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+@* ===== Call to action ===== *@
+<section class="cta">
+    <div class="wrap" style="text-align:center">
+        <h2>Ready to book your visit?</h2>
+        <p>Find a specialist and choose a time that suits you.</p>
+        <div class="row" style="justify-content:center">
+            <a class="pb inv" asp-controller="Doctors" asp-action="Index">Book an appointment</a>
+        </div>
+    </div>
+</section>

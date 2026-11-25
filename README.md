@@ -1,67 +1,55 @@
 # MediCare – Clinic Management & Appointment System
 
-## Project Overview
+## Authentication & Role-Based Access Control (RBAC)
 
-MediCare is a web-based clinic management and appointment booking system designed to connect patients with doctors and make healthcare services easier to access.
+### 1. Default Roles
+The system automatically provisions three main roles upon application startup:
+- `Admin`: Full clinic management access (represents Clinic Assistant in ERD).
+- `Doctor`: Doctor account (subject to administrative approval gate).
+- `Patient`: Patient self-service registration and booking.
 
-The system allows patients to explore available doctors, search by medical specialty and location, and manage their appointments. It also aims to help doctors and clinic staff manage their work through a centralized platform.
+---
 
-## Main Features
+### 2. Administrator Account Provisioning (Secure Configuration)
+For security compliance, default administrative credentials are never committed in plaintext to source control.
 
-- Browse approved doctors.
-- Search doctors by name and city.
-- Filter doctors by medical specialty.
-- Filter doctors based on availability.
-- Display doctor profiles, consultation fees, and ratings.
-- User registration and authentication.
-- Appointment booking and management.
+To seed the initial administrator account (`admin@medicare.com`), configure the secret `Seed:AdminPassword` locally using one of the following methods:
 
-*Note: Features are implemented progressively as part of the graduation project.*
-
-## Technologies Used
-
-- **Backend:** ASP.NET Core MVC, C#
-- **Database:** SQL Server
-- **ORM:** Entity Framework Core
-- **Frontend:** HTML, CSS, JavaScript, Razor Views
-- **Architecture:** Layered Architecture (Web, Services, Data)
-
-## Project Structure
-
-```text
-Graduation_Project_Depi/
-│
-├── Project/
-│   └── Project_Back/
-│       └── MediCare/
-│           ├── MediCare.Web/
-│           ├── MediCare.Services/
-│           └── MediCare.Data/
-│
-├── frontend-prototype/
-├── MediCare_ERD.pdf
-├── .gitignore
-└── README.md
+#### Method A: .NET User Secrets (Recommended for Local Development)
+The `MediCare.Web` project is configured with a `UserSecretsId`. If initializing from scratch:
+```bash
+cd Project/Project_Back/MediCare/MediCare.Web
+dotnet user-secrets init
+dotnet user-secrets set "Seed:AdminPassword" "<YourStrongPasswordHere>"
 ```
 
-## Getting Started
+#### Method B: Environment Variable
+You can set an environment variable before launching the application:
+```bash
+# Windows PowerShell
+$env:Seed__AdminPassword = "<YourStrongPasswordHere>"
 
-1. Clone the repository:
+# Windows CMD
+set Seed__AdminPassword=<YourStrongPasswordHere>
+```
 
-   ```bash
-   git clone https://github.com/Boody-2006/Graduation_Project_Depi.git
-   ```
+> **Important Security Policy:**  
+> If `Seed:AdminPassword` is not configured or left empty, the application will **skip** creating the administrator account and log a warning explaining how to configure it. No hardcoded or default passwords are used.
 
-2. Open the solution file:
+---
 
-   `Project/Project_Back/MediCare/MediCare.slnx`
+### 3. Role-Based Access Control (RBAC) & Testing
+- **Protected Endpoint for Testing:**  
+  The endpoint `/Account/AdminOnly` is protected with `[Authorize(Roles = "Admin")]`.
+- **Access Denied Redirection:**  
+  When an authenticated user without the `Admin` role (e.g. a `Patient` or `Doctor`) attempts to access `/Account/AdminOnly`, ASP.NET Core redirects the user to `/Account/AccessDenied` (HTTP 403 Forbidden).
 
-3. Configure the database connection string in `appsettings.json`.
+---
 
-4. Make sure SQL Server or LocalDB is installed and available.
+### 4. Database Migrations & Initialization
+The database schema and seed data are applied automatically on application startup using Entity Framework Core Migrations (`MigrateAsync()`).
 
-5. Build and run `MediCare.Web` using Visual Studio.
-
-## Team Project
-
-This project is developed as part of the Digital Egypt Pioneers Initiative (DEPI) graduation project.
+To manually apply migrations via the EF Core CLI:
+```bash
+dotnet ef database update --project Project/Project_Back/MediCare/MediCare.Data --startup-project Project/Project_Back/MediCare/MediCare.Web
+```

@@ -16,11 +16,13 @@
 
     @* Fonts: Fraunces for headings, IBM Plex Sans for body text *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     @* medicare.css = base styles, medicare-pro.css = the professional design layer (must come second).
        asp-append-version stops the browser from showing an old cached copy after a change. *@
+    @* site.css comes from the team (Person 5's login/register styles); it is loaded FIRST so our design can override it *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/medicare.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/medicare-pro.css" asp-append-version="true" />
 
@@ -28,7 +30,8 @@
         // If any image fails to load, hide it so the fallback behind it (colour or initial)
         // is shown instead of a broken-image icon. One handler for the whole site.
         document.addEventListener("error", function (e) {
-            if (e.target && e.target.tagName === "IMG") { e.target.style.display = "none"; }
+            var el = Object(e.target);
+            if (el.tagName === "IMG") { el.style.display = "none"; }
         }, true);
     </script>
 </head>
@@ -50,9 +53,8 @@
                 <a class="@(current == "Doctors" ? "on" : "")" asp-controller="Doctors" asp-action="Index">Doctors</a>
             </nav>
 
-            @* Login/Register pages are built in Person 5's task (AccountController) *@
-            <a class="sm" asp-controller="Account" asp-action="Login">Sign in</a>
-            <a class="pb" asp-controller="Account" asp-action="Register">Register</a>
+            @* Sign in / Register (or the user name + Logout when logged in) comes from Person 5's partial *@
+            <partial name="_LoginPartial" />
         </div>
     </header>
 
@@ -83,7 +85,7 @@
                 <div>
                     <h4>Account</h4>
                     <a asp-controller="Account" asp-action="Login">Sign in</a>
-                    <a asp-controller="Account" asp-action="Register">Register</a>
+                    <a asp-controller="Account" asp-action="RegisterPatient">Register</a>
                 </div>
             </div>
             <div class="ft-bot">

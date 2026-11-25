@@ -1,159 +1,100 @@
-﻿@model List<MediCare.Services.ViewModels.DoctorCardVM>
-
+﻿@*
+    Doctors/Index.cshtml  (public doctor listing page)
+    - Model: the list of doctor cards returned by DoctorService.SearchAsync (approved doctors only).
+    - ViewBag.Filter          = the values the visitor typed/selected (so the form keeps them after Search).
+    - ViewBag.Specializations = specializations from the database (fills the Specialty dropdown).
+    The form uses GET, so the filters appear in the URL and the page can be bookmarked or shared.
+*@
+@using MediCare.Services.ViewModels
+@model List<DoctorCardVM>
 @{
-    ViewData["Title"] = "Our Doctors";
-    var filter = ViewBag.Filter as MediCare.Services.ViewModels.DoctorFilterVM;
+    ViewData["Title"] = "Find a Doctor";
+    var filter = (DoctorFilterVM?)ViewBag.Filter ?? new DoctorFilterVM();
+    var specializations = (List<SpecializationOptionVM>)ViewBag.Specializations;
 }
 
-<section class="doc-hero">
-    <div class="wrap">
-        <h1>Find Your Doctor</h1>
-        <p>Choose the right specialist for your health.</p>
-    </div>
-</section>
+<section class="doc-page wrap">
+    <h1>Find Your Doctor</h1>
+    <p class="mu">Choose the right specialist for your health.</p>
 
-<section class="sec" style="padding-top:0">
-    <div class="wrap">
-
-        <form method="get" asp-action="Index" class="doc-filter">
-
-            <div class="doc-field">
-                <label for="f-search">Doctor name</label>
-                <input id="f-search"
-                       name="SearchTerm"
-                       value="@filter?.SearchTerm"
-                       placeholder="e.g. Hana" />
-            </div>
-
-            <div class="doc-field">
-                <label for="f-city">City</label>
-                <input id="f-city"
-                       name="City"
-                       value="@filter?.City"
-                       placeholder="e.g. Cairo" />
-            </div>
-
-            <div class="doc-field">
-                <label for="f-spec">Specialty</label>
-                <select id="f-spec" name="SpecializationId">
-                    <option value="">All specialties</option>
-                    <option value="1" selected="@(filter?.SpecializationId == 1)">Neurology</option>
-                    <option value="2" selected="@(filter?.SpecializationId == 2)">Radiology</option>
-                    <option value="3" selected="@(filter?.SpecializationId == 3)">Neurosurgery</option>
-                    <option value="4" selected="@(filter?.SpecializationId == 4)">Internal Medicine</option>
-                    <option value="5" selected="@(filter?.SpecializationId == 5)">Cardiology</option>
-                    <option value="6" selected="@(filter?.SpecializationId == 6)">Pediatrics</option>
-                    <option value="7" selected="@(filter?.SpecializationId == 7)">Dermatology</option>
-                    <option value="8" selected="@(filter?.SpecializationId == 8)">Orthopedics</option>
-                </select>
-            </div>
-
-            <div class="doc-field">
-                <label for="f-avail">Availability</label>
-                <select id="f-avail" name="IsAvailable">
-                    <option value="">Any</option>
-                    <option value="true" selected="@(filter?.IsAvailable == true)">Available</option>
-                    <option value="false" selected="@(filter?.IsAvailable == false)">Not available</option>
-                </select>
-            </div>
-
-            <button class="pb" type="submit">Search</button>
-            <a class="sm" asp-action="Index">Clear</a>
-
-        </form>
-
-        <div class="doc-bar">
-            <span class="doc-count">
-                <b>@Model.Count</b>
-                @(Model.Count == 1 ? "doctor" : "doctors") found
-            </span>
+    @* ===== Filter form (GET) ===== *@
+    <form method="get" asp-controller="Doctors" asp-action="Index" class="doc-filter">
+        <div class="doc-field">
+            <label for="f-name">Doctor name</label>
+            <input id="f-name" type="text" name="SearchTerm" value="@filter.SearchTerm" placeholder="e.g. Hana" />
         </div>
 
-        @if (!Model.Any())
-        {
-            <div class="doc-empty">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="7" />
-                    <path d="M21 21l-4.3-4.3" />
-                </svg>
+        <div class="doc-field">
+            <label for="f-city">City</label>
+            <input id="f-city" type="text" name="City" value="@filter.City" placeholder="e.g. Cairo" />
+        </div>
 
-                <h3>No doctors found</h3>
-                <p class="mu">Try another name, city or specialty.</p>
-                <a class="pb" asp-action="Index">Clear filters</a>
-            </div>
-        }
-        else
-        {
-            <div class="doc-grid">
-
-                @foreach (var doctor in Model)
+        @* Options come from the database, so they always match the real Ids *@
+        <div class="doc-field">
+            <label for="f-spec">Specialty</label>
+            <select id="f-spec" name="SpecializationId">
+                <option value="">All specialties</option>
+                @foreach (var s in specializations)
                 {
-                    var initial = doctor.FullName
-                        .Replace("Dr. ", "")
-                        .Trim()
-                        .FirstOrDefault();
-
-                    <article class="doc-card">
-
-                        <div class="doc-photo">
-
-                            <span class="doc-initial">@initial</span>
-
-                            @if (!string.IsNullOrWhiteSpace(doctor.ProfileImage))
-                            {
-                                <img src="@doctor.ProfileImage"
-                                     alt="@doctor.FullName"
-                                     loading="lazy" />
-                            }
-
-                            <span class="doc-badge @(doctor.IsAvailable ? "on" : "off")">
-                                @(doctor.IsAvailable ? "Available" : "Not available")
-                            </span>
-
-                        </div>
-
-                        <div class="doc-body">
-
-                            <h3 class="doc-name">@doctor.FullName</h3>
-
-                            <span class="doc-spec">
-                                @doctor.SpecializationName
-                            </span>
-
-                            <span class="doc-meta">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M12 21s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z" />
-                                    <circle cx="12" cy="9" r="2.5" />
-                                </svg>
-                                @doctor.City
-                            </span>
-
-                            <span class="doc-meta">
-                                @if (doctor.AverageRating.HasValue)
-                                {
-                                    <span class="doc-rating">
-                                        ★ @doctor.AverageRating.Value.ToString("0.0")
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span>No ratings yet</span>
-                                }
-                            </span>
-
-                            <div class="doc-foot">
-                                <div class="doc-fee">
-                                    <small>Consultation fee</small>
-                                    <b>@doctor.ConsultationFee.ToString("0") EGP</b>
-                                </div>
-                            </div>
-
-                        </div>
-                    </article>
+                    <option value="@s.Id" selected="@(filter.SpecializationId == s.Id)">@s.Name</option>
                 }
+            </select>
+        </div>
 
-            </div>
-        }
+        <div class="doc-field">
+            <label for="f-av">Availability</label>
+            <select id="f-av" name="IsAvailable">
+                <option value="">Any</option>
+                <option value="true" selected="@(filter.IsAvailable == true)">Available</option>
+                <option value="false" selected="@(filter.IsAvailable == false)">Not available</option>
+            </select>
+        </div>
 
-    </div>
+        <button type="submit" class="pb">Search</button>
+        <a class="sm" asp-controller="Doctors" asp-action="Index">Clear</a>
+    </form>
+
+    <p class="doc-count"><b>@Model.Count</b> doctors found</p>
+
+    @if (!Model.Any())
+    {
+        @* ===== Empty state ===== *@
+        <div class="doc-empty">
+            <h3>No doctors found</h3>
+            <p class="mu">Try another name, city or specialty.</p>
+            <a class="pb" asp-controller="Doctors" asp-action="Index">Clear filters</a>
+        </div>
+    }
+    else
+    {
+        @* ===== Doctor cards ===== *@
+        <div class="doc-grid">
+            @foreach (var d in Model)
+            {
+                <article class="doc-card">
+                    <div class="doc-photo">
+                        @if (!string.IsNullOrWhiteSpace(d.ProfileImage))
+                        {
+                            <img src="@d.ProfileImage" alt="@d.FullName" />
+                        }
+                        else
+                        {
+                            @* No photo: show the first letter of the name *@
+                            <span class="doc-initial">@(d.FullName.Replace("Dr. ", "").Substring(0, 1))</span>
+                        }
+                    </div>
+                    <div class="doc-body">
+                        <h3>@d.FullName</h3>
+                        <p class="doc-spec">@d.SpecializationName</p>
+                        <p class="mu">@d.City@(string.IsNullOrWhiteSpace(d.Address) ? "" : " - " + d.Address)</p>
+                        <p class="doc-meta">
+                            <span>@d.ConsultationFee.ToString("0.##") EGP</span>
+                            <span>@(d.AverageRating.HasValue ? d.AverageRating.Value.ToString("0.0") + " / 5" : "No ratings yet")</span>
+                        </p>
+                        <span class="doc-badge @(d.IsAvailable ? "on" : "off")">@(d.IsAvailable ? "Available" : "Not available")</span>
+                    </div>
+                </article>
+            }
+        </div>
+    }
 </section>

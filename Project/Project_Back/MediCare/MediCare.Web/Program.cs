@@ -48,7 +48,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // Doctor listing page (Person 6).
 // TEMPORARY: fake data until the real DoctorService is plugged in.
 // Later this line becomes: AddScoped<IDoctorService, DoctorService>();
-builder.Services.AddScoped<IDoctorService, FakeDoctorService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
 
 builder.Services.AddControllersWithViews();
 

@@ -885,3 +885,141 @@ a.pb.inv {
         transition: none !important;
     }
 }
+
+/* ---------- 9. Header account area (_LoginPartial) ---------- */
+.acc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.acc-hello {
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.acc-logout {
+    margin: 0;
+}
+
+.role {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 999px;
+}
+
+.role-admin {
+    background: #fde4e1;
+    color: #b3423a;
+}
+
+.role-doctor {
+    background: #d8f0e3;
+    color: #1f7a52;
+}
+
+.role-patient {
+    background: var(--ps);
+    color: var(--pr);
+}
+
+/* Register dropdown: a plain <details> element, no JavaScript needed to open it */
+.dd {
+    position: relative;
+}
+
+    .dd summary {
+        list-style: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .dd summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .dd summary svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform .2s;
+        }
+
+    .dd[open] summary {
+        border-color: var(--pr);
+        color: var(--pr);
+    }
+
+        .dd[open] summary svg {
+            transform: rotate(180deg);
+        }
+
+.dd-menu {
+    position: absolute;
+    inset-inline-end: 0;
+    top: calc(100% + 10px);
+    min-width: 280px;
+    background: var(--cd);
+    border: 1px solid var(--ln);
+    border-radius: 14px;
+    box-shadow: var(--sh2);
+    padding: 6px;
+    z-index: 30;
+}
+
+    .dd-menu a {
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .dd-menu a:hover {
+            background: var(--ps);
+            color: var(--pr);
+        }
+
+    .dd-menu svg {
+        width: 18px;
+        height: 18px;
+        flex: none;
+        fill: none;
+        stroke: var(--pr);
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+/* Account pages load Bootstrap, so remove our own .row spacing there (Bootstrap uses gutters) */
+.page-account .row {
+    gap: 0;
+}
+
+.page-account main {
+    min-height: 60vh;
+}
+
+.page-account .hd .row, .page-account .ft .row {
+    gap: 0;
+}
+
+@media (max-width: 900px) {
+    .acc-hello {
+        display: none;
+    }
+}

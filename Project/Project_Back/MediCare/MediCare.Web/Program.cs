@@ -50,8 +50,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-// Register Authentication Service (Dependency Injection)
+// Register Authentication & Person 5 Authorization / Booking Services (Dependency Injection)
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IAdminDoctorService, AdminDoctorService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddControllersWithViews();
 

@@ -1,0 +1,204 @@
+@model MediCare.Services.ViewModels.AdminDoctorsListViewModel
+@{
+    ViewData["Title"] = "Doctor Approvals";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1" style="color: #14283c;">Doctor Account Approvals</h1>
+        <p class="text-muted mb-0">Approve or reject newly registered doctors before they can access the clinic portal.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <span class="badge rounded-pill px-3 py-2" style="background:#fdf1ec;color:#d4603a;">@Model.PendingDoctors.Count Pending</span>
+        <span class="badge rounded-pill px-3 py-2" style="background:#eaf6f0;color:#2c8a60;">@Model.ApprovedDoctors.Count Approved</span>
+    </div>
+</div>
+
+<!-- Pending Doctors -->
+<div class="card border shadow-sm mb-4" style="border-color: #dde4ea !important;">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h2 class="h6 fw-bold mb-0">Pending Approval</h2>
+        <span class="text-muted small">@Model.PendingDoctors.Count request(s)</span>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.PendingDoctors.Any())
+        {
+            <p class="text-muted p-4 mb-0">No pending doctor registrations at the moment.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Specialization</th>
+                            <th>City</th>
+                            <th>Fee</th>
+                            <th>Registered</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var doc in Model.PendingDoctors)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@doc.FullName</div>
+                                    <div class="small text-muted">@doc.Email @(!string.IsNullOrWhiteSpace(doc.PhoneNumber) ? $"· {doc.PhoneNumber}" : "")</div>
+                                </td>
+                                <td>@doc.SpecializationName</td>
+                                <td>@doc.City</td>
+                                <td>@doc.ConsultationFee.ToString("N0") EGP</td>
+                                <td class="text-muted small">@doc.CreatedAt.ToString("dd MMM yyyy")</td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        <form asp-action="ApproveDoctor" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@doc.DoctorId" />
+                                            <button type="submit" class="btn btn-sm btn-success px-3">Approve</button>
+                                        </form>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger px-3"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#rejectDoctorModal"
+                                                data-doctor-id="@doc.DoctorId"
+                                                data-doctor-name="@doc.FullName">
+                                            Reject
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Approved Doctors -->
+<div class="card border shadow-sm mb-4" style="border-color: #dde4ea !important;">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h2 class="h6 fw-bold mb-0">Approved Doctors</h2>
+        <span class="text-muted small">@Model.ApprovedDoctors.Count active</span>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.ApprovedDoctors.Any())
+        {
+            <p class="text-muted p-4 mb-0">No approved doctors yet.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Specialization</th>
+                            <th>City</th>
+                            <th>Fee</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var doc in Model.ApprovedDoctors)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@doc.FullName</div>
+                                    <div class="small text-muted">@doc.Email</div>
+                                </td>
+                                <td>@doc.SpecializationName</td>
+                                <td>@doc.City</td>
+                                <td>@doc.ConsultationFee.ToString("N0") EGP</td>
+                                <td><span class="badge" style="background:#eaf6f0;color:#2c8a60;">Approved</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model.RejectedDoctors.Any())
+{
+    <div class="card border shadow-sm" style="border-color: #dde4ea !important;">
+        <div class="card-header bg-white py-3">
+            <h2 class="h6 fw-bold mb-0">Rejected Applications</h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Specialization</th>
+                            <th>Rejection Reason</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var doc in Model.RejectedDoctors)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@doc.FullName</div>
+                                    <div class="small text-muted">@doc.Email</div>
+                                </td>
+                                <td>@doc.SpecializationName</td>
+                                <td class="text-muted">@doc.RejectionReason</td>
+                                <td class="text-end">
+                                    <form asp-action="ApproveDoctor" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@doc.DoctorId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Re-Approve</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Reject Doctor Modal -->
+<div class="modal fade" id="rejectDoctorModal" tabindex="-1" aria-labelledby="rejectDoctorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="RejectDoctor" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="rejectDoctorId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectDoctorModalLabel">Reject Doctor Registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Provide a reason for rejecting <strong id="rejectDoctorName"></strong>:</p>
+                    <textarea name="reason" id="rejectDoctorReason" class="form-control" rows="3" required placeholder="e.g., Missing medical syndicate license details."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const rejectDocModal = document.getElementById('rejectDoctorModal');
+        if (rejectDocModal) {
+            rejectDocModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                document.getElementById('rejectDoctorId').value = btn.getAttribute('data-doctor-id');
+                document.getElementById('rejectDoctorName').textContent = btn.getAttribute('data-doctor-name');
+                document.getElementById('rejectDoctorReason').value = '';
+            });
+        }
+    </script>
+}

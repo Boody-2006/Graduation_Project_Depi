@@ -1,0 +1,190 @@
+@model List<MediCare.Services.ViewModels.PatientAppointmentItemViewModel>
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1" style="color: #14283c;">My Appointments</h1>
+        <p class="text-muted mb-0">View your booked visits, reschedule to another slot, or cancel an upcoming appointment.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-auth-primary px-4">Book New Appointment</a>
+</div>
+
+<div class="card border shadow-sm" style="border-color: #dde4ea !important;">
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <div class="p-4 text-center">
+                <p class="text-muted mb-3">You do not have any appointments yet.</p>
+                <a asp-action="Index" class="btn btn-outline-primary">Browse Doctors &amp; Book</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Doctor</th>
+                            <th>Type</th>
+                            <th>Fee</th>
+                            <th>Status</th>
+                            <th>Notes / Reason</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var badgeStyle = item.Status switch
+                            {
+                                "confirmed" => "background:#eaf6f0;color:#2c8a60;",
+                                "pending" => "background:#fdf1ec;color:#d4603a;",
+                                "cancelled" or "rejected" => "background:#fbeeed;color:#b3423a;",
+                                _ => "background:#edf1f5;color:#66788a;"
+                            };
+                            <tr>
+                                <td class="text-nowrap">@item.AppointmentDate.ToString("ddd, dd MMM yyyy")</td>
+                                <td class="fw-semibold">@item.StartTime.ToString("HH:mm")</td>
+                                <td>
+                                    <div class="fw-semibold">@item.DoctorName</div>
+                                    <div class="small text-muted">@item.SpecializationName</div>
+                                </td>
+                                <td>@item.Type</td>
+                                <td>@item.Fee.ToString("N0") EGP</td>
+                                <td>
+                                    <span class="badge rounded-pill text-capitalize px-3 py-1" style="@badgeStyle">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td class="small text-muted">
+                                    @if (!string.IsNullOrWhiteSpace(item.CancelReason))
+                                    {
+                                        <span>Reason: @item.CancelReason</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@(string.IsNullOrWhiteSpace(item.Notes) ? "—" : item.Notes)</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (item.CanModify)
+                                    {
+                                        <div class="d-inline-flex gap-2">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#rescheduleModal"
+                                                    data-appointment-id="@item.Id"
+                                                    data-doctor-name="@item.DoctorName"
+                                                    data-current-date="@item.AppointmentDate.ToString("yyyy-MM-dd")">
+                                                Reschedule
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#cancelModal"
+                                                    data-appointment-id="@item.Id"
+                                                    data-doctor-name="@item.DoctorName">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">—</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Cancel" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="cancelAppointmentId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelModalLabel">Cancel Appointment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Are you sure you want to cancel your appointment with <strong id="cancelDoctorName"></strong>?</p>
+                    <label for="cancelReasonInput" class="form-label fw-semibold">Reason (Optional)</label>
+                    <textarea name="reason" id="cancelReasonInput" class="form-control" rows="2" placeholder="Optional cancellation note"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Keep Appointment</button>
+                    <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reschedule Modal -->
+<div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-action="Reschedule" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="rescheduleAppointmentId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rescheduleModalLabel">Reschedule Appointment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">Choose a new date and time for your appointment with <strong id="rescheduleDoctorName"></strong>:</p>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="rescheduleNewDate" class="form-label fw-semibold">New Date</label>
+                            <input type="date" name="newDate" id="rescheduleNewDate" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        </div>
+                        <div class="col-6">
+                            <label for="rescheduleNewTime" class="form-label fw-semibold">New Time</label>
+                            <input type="time" name="newTime" id="rescheduleNewTime" class="form-control" value="10:00" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-auth-primary">Save New Slot</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const cancelModalEl = document.getElementById('cancelModal');
+        if (cancelModalEl) {
+            cancelModalEl.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                document.getElementById('cancelAppointmentId').value = btn.getAttribute('data-appointment-id');
+                document.getElementById('cancelDoctorName').textContent = btn.getAttribute('data-doctor-name');
+                document.getElementById('cancelReasonInput').value = '';
+            });
+        }
+
+        const rescheduleModalEl = document.getElementById('rescheduleModal');
+        if (rescheduleModalEl) {
+            rescheduleModalEl.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                document.getElementById('rescheduleAppointmentId').value = btn.getAttribute('data-appointment-id');
+                document.getElementById('rescheduleDoctorName').textContent = btn.getAttribute('data-doctor-name');
+                document.getElementById('rescheduleNewDate').value = btn.getAttribute('data-current-date');
+            });
+        }
+    </script>
+}

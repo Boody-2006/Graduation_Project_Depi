@@ -6,13 +6,13 @@ namespace MediCare.Services.ViewModels
     {
         [Required(ErrorMessage = "First name is required / الاسم الأول مطلوب")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters / الاسم بين 2 و50 حرفاً")]
-        [RegularExpression(@"^[\p{L}\s\-']+$", ErrorMessage = "First name can only contain letters / الاسم يجب أن يحتوي على حروف فقط")]
+        [RegularExpression(@"^[a-zA-Z\u0621-\u064A\s\-']+$", ErrorMessage = "First name can only contain letters / الاسم يجب أن يحتوي على حروف فقط")]
         [Display(Name = "First Name / الاسم الأول")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last name is required / اسم العائلة مطلوب")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters / اسم العائلة بين 2 و50 حرفاً")]
-        [RegularExpression(@"^[\p{L}\s\-']+$", ErrorMessage = "Last name can only contain letters / اسم العائلة يجب أن يحتوي على حروف فقط")]
+        [RegularExpression(@"^[a-zA-Z\u0621-\u064A\s\-']+$", ErrorMessage = "Last name can only contain letters / اسم العائلة يجب أن يحتوي على حروف فقط")]
         [Display(Name = "Last Name / اسم العائلة")]
         public string LastName { get; set; } = string.Empty;
 

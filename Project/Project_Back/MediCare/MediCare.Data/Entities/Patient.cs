@@ -1,11 +1,26 @@
 ﻿
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MediCare.Data.Entities
 {
     public class Patient
     {
         public string Id { get; set; } = string.Empty;
 
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
+        public int Age
+        {
+            get
+            {
+                var today = DateOnly.FromDateTime(DateTime.Today);
+                int age = today.Year - DateOfBirth.Year;
+
+                if (DateOfBirth > today.AddYears(-age))
+                    age--;
+
+                return age;
+            }
+        }
 
         public string? BloodType { get; set; }
 
@@ -14,5 +29,6 @@ namespace MediCare.Data.Entities
         public string? Allergies { get; set; }
 
         public ApplicationUser User { get; set; } = null!;
+        public List<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

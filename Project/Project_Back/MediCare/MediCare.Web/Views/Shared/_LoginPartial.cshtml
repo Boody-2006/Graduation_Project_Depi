@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Identity
+@using MediCare.Data.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@*
+    _LoginPartial.cshtml
+    The account area of the header. Same logic as before (Person 5):
+      - signed in  -> "Hello, name" + role badge + Log Out button
+      - signed out -> Register dropdown (patient / doctor) + Log In button
+    Restyled with the site's own classes (no Bootstrap), so it matches the new design.
+    The dropdown is a plain <details> element, so it needs no JavaScript to open.
+*@
+
+<div class="acc">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var currentUser = await UserManager.GetUserAsync(User);
+        var displayName = currentUser != null && !string.IsNullOrWhiteSpace(currentUser.FirstName)
+            ? $"{currentUser.FirstName} {currentUser.LastName}".Trim()
+            : (User.Identity?.Name ?? "User");
+
+        <span class="acc-hello">
+            Hello, @displayName
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="role role-admin">Admin</span>
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                <span class="role role-doctor">Doctor</span>
+            }
+            else if (User.IsInRole("Patient"))
+            {
+                <span class="role role-patient">Patient</span>
+            }
+        </span>
+
+        @* The form tag helper adds the anti-forgery token automatically *@
+        <form asp-controller="Account" asp-action="Logout" method="post" class="acc-logout">
+            <button type="submit" class="sm">Log Out / خروج</button>
+        </form>
+    }
+    else
+    {
+        <details class="dd">
+            <summary class="sm">
+                Register / حساب جديد
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+            </summary>
+            <div class="dd-menu">
+                <a asp-controller="Account" asp-action="RegisterPatient">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></svg>
+                    Patient Registration / مريض
+                </a>
+                <a asp-controller="Account" asp-action="RegisterDoctor">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z" /></svg>
+                    Doctor Registration / طبيب
+                </a>
+            </div>
+        </details>
+        <a class="pb" asp-controller="Account" asp-action="Login">Log In / دخول</a>
+    }
+</div>

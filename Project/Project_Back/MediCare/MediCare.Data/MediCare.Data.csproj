@@ -18,8 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Configurations\" />
     <Folder Include="Data\" />
     <Folder Include="UnitOfWork\" />
     <Folder Include="Repositories\" />

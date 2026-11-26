@@ -1,0 +1,100 @@
+@model RegisterPatientViewModel
+
+@{
+    ViewData["Title"] = "Patient Registration / تسجيل مريض";
+}
+
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="auth-card">
+            <div class="auth-header primary-theme">
+                <div class="auth-icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                        <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C8.844 9.04 8.434 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+                    </svg>
+                </div>
+                <h4 class="auth-title">Create Patient Account / حساب مريض جديد</h4>
+                <div class="auth-subtitle">Book appointments and access your medical records</div>
+            </div>
+            <div class="auth-body">
+
+                <form asp-action="RegisterPatient" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 shadow-sm" role="alert"></div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label-custom"></label>
+                            <input asp-for="FirstName" class="form-control form-control-custom" placeholder="e.g. Ahmed / أحمد" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label-custom"></label>
+                            <input asp-for="LastName" class="form-control form-control-custom" placeholder="e.g. Samir / سمير" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label-custom"></label>
+                            <input asp-for="Email" class="form-control form-control-custom" placeholder="patient@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label-custom"></label>
+                            <input asp-for="PhoneNumber" class="form-control form-control-custom" placeholder="01012345678" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label-custom"></label>
+                            <select asp-for="Gender" class="form-select form-select-custom">
+                                <option value="Male">Male / ذكر</option>
+                                <option value="Female">Female / أنثى</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label-custom"></label>
+                            <input asp-for="DateOfBirth" class="form-control form-control-custom" type="date" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label-custom"></label>
+                            <input asp-for="Password" class="form-control form-control-custom" placeholder="••••••••" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label-custom"></label>
+                            <input asp-for="ConfirmPassword" class="form-control form-control-custom" placeholder="••••••••" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-auth-primary">
+                            Register Patient / إنشاء الحساب
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-muted small">Already have an account? / لديك حساب بالفعل؟ </span>
+                        <a asp-action="Login" class="text-primary fw-semibold text-decoration-none">Sign In / تسجيل الدخول</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

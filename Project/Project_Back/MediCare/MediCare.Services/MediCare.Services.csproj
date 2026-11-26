@@ -7,13 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MediCare.Data\MediCare.Data.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Implementations\" />
-    <Folder Include="ViewModels\" />
+    <ProjectReference Include="..\MediCare.Data\MediCare.Data.csproj" />
   </ItemGroup>
 
 </Project>

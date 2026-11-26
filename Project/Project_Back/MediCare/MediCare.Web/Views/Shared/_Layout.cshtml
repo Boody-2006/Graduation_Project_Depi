@@ -1,83 +1,138 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@*
+    _Layout.cshtml
+    The shared frame (master page) of every page: header, footer and the CSS/fonts.
+    Each View is placed inside @RenderBody(), and sets its own title with ViewData["Title"].
+*@
+@{
+    // Which controller is open? Used to highlight the active link in the navbar.
+    var current = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>@ViewData["Title"] - MediCare</title>
-    <script type="importmap"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @* Fonts: Fraunces for headings, IBM Plex Sans for body text *@
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    @* Bootstrap is loaded for Account, Admin, and Booking pages for UI components *@
+    @if (current == "Account" || current == "Admin" || current == "Booking")
+    {
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    }
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MediCare.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/medicare.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/medicare-pro.css" asp-append-version="true" />
+
+    <script>
+        document.addEventListener("error", function (e) {
+            var el = Object(e.target);
+            if (el.tagName === "IMG") { el.style.display = "none"; }
+        }, true);
+
+        document.addEventListener("click", function (e) {
+            document.querySelectorAll("details.dd[open]").forEach(function (d) {
+                if (!d.contains(Object(e.target))) { d.removeAttribute("open"); }
+            });
+        });
+    </script>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" style="color: #1d5f8a;" asp-area="" asp-controller="Home" asp-action="Index">MediCare</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @if (User.IsInRole("Patient"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold" asp-controller="Booking" asp-action="Index">Book Appointment</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold" asp-controller="Booking" asp-action="MyAppointments">My Appointments</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold" asp-controller="Admin" asp-action="PendingDoctors">Approve Doctors</a>
-                            </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
+<body class="@(current == "Account" || current == "Admin" || current == "Booking" ? "page-account" : "")">
+
+    @* ===== Header ===== *@
+    <header class="hd">
+        <div class="wrap hd-in">
+            <a class="lg" asp-controller="Home" asp-action="Index">
+                <svg width="30" height="30" viewBox="0 0 28 28" aria-hidden="true">
+                    <circle cx="11" cy="14" r="9" fill="currentColor" opacity=".35" />
+                    <circle cx="17" cy="14" r="9" fill="currentColor" />
+                </svg>
+                MediCare
+            </a>
+
+            <nav class="nv">
+                <a class="@(current == "Home" ? "on" : "")" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="@(current == "Doctors" ? "on" : "")" asp-controller="Doctors" asp-action="Index">Doctors</a>
+                @if (User.IsInRole("Patient"))
+                {
+                    <a class="@(current == "Booking" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "on" : "")" asp-controller="Booking" asp-action="Index">Book Appointment</a>
+                    <a class="@(current == "Booking" && ViewContext.RouteData.Values["action"]?.ToString() == "MyAppointments" ? "on" : "")" asp-controller="Booking" asp-action="MyAppointments">My Appointments</a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="@(current == "Admin" ? "on" : "")" asp-controller="Admin" asp-action="PendingDoctors">Approve Doctors</a>
+                }
+            </nav>
+
+            @* Sign in / Register comes from Person 5's partial *@
+            <partial name="_LoginPartial" />
+        </div>
     </header>
-    <div class="container">
+
+    @* ===== Page content ===== *@
+    <main class="@(current == "Account" || current == "Admin" || current == "Booking" ? "container pb-3" : "")">
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
                 @TempData["SuccessMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show my-3" role="alert">
                 @TempData["ErrorMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        @RenderBody()
+    </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - MediCare.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    @* ===== Footer ===== *@
+    <footer class="ft">
+        <div class="wrap">
+            <div class="ft-grid">
+                <div>
+                    <div class="lg">
+                        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+                            <circle cx="11" cy="14" r="9" fill="currentColor" opacity=".35" />
+                            <circle cx="17" cy="14" r="9" fill="currentColor" />
+                        </svg>
+                        MediCare
+                    </div>
+                    <p class="mu" style="max-width:34ch;margin:0">Care that keeps its appointments. Find a specialist, book online and keep your records in one place.</p>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <a asp-controller="Home" asp-action="Index">Home</a>
+                    <a asp-controller="Doctors" asp-action="Index">Find a doctor</a>
+                </div>
+                <div>
+                    <h4>Account</h4>
+                    <a asp-controller="Account" asp-action="Login">Sign in</a>
+                    <a asp-controller="Account" asp-action="RegisterPatient">Register</a>
+                </div>
+            </div>
+            <div class="ft-bot">
+                <span>&copy; 2026 MediCare. All rights reserved.</span>
+                <span>Graduation project - DEPI</span>
+            </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* jQuery + Bootstrap JS for form validation, modals, and alerts *@
+    @if (current == "Account" || current == "Admin" || current == "Booking")
+    {
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    }
+
+    @* Optional place for page-specific scripts *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

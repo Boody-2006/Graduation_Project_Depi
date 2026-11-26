@@ -5,6 +5,7 @@ using MediCare.Data.Data;
 using MediCare.Data.Entities;
 using MediCare.Services.Interfaces;
 using MediCare.Services.Implementations;
+using MediCare.Services.Factories;
 using MediCare.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,9 +47,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Doctor listing page (Person 6).
-// TEMPORARY: fake data until the real DoctorService is plugged in.
-// Later this line becomes: AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+
+// Appointment Engine (Person 4).
+builder.Services.AddScoped<IAppointmentFactory, AppointmentFactory>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 builder.Services.AddControllersWithViews();
 

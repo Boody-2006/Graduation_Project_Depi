@@ -28,6 +28,9 @@ namespace MediCare.Data.Configurations
                 .HasForeignKey<Appointment>(a => a.RescheduledFromId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
+            builder.HasIndex(a => new { a.DoctorId, a.AppointmentDate, a.StartTime })
+                .IsUnique()
+                .HasFilter("[Status] IN ('Pending', 'Confirmed', 'Done')");
         }
     }
 }

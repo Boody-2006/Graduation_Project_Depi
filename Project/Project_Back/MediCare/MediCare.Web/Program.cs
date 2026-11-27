@@ -50,6 +50,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // Later this line becomes: AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 
+builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+
+builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

@@ -29,6 +29,9 @@ namespace MediCare.Data.Entities
         public string? Allergies { get; set; }
 
         public ApplicationUser User { get; set; } = null!;
+
+        public List<MriScan> MriScans { get; set; } = new List<MriScan>();
+
         public List<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

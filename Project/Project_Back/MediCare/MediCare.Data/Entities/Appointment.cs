@@ -17,11 +17,9 @@
         public Doctor Doctor { get; set; }
         public string PatientId { get; set; }
         public Patient Patient { get; set; }
-        public MedicalRecord MedicalRecord { get; set; }
+        public MedicalRecord? MedicalRecord { get; set; }
         public int? RescheduledFromId { get; set; }
-
         public Appointment? RescheduledFrom { get; set; }
-
         public Appointment? RescheduledTo { get; set; }
     }
 }

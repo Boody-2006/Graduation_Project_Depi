@@ -12,6 +12,7 @@ namespace MediCare.Data.Entities
         public string? TreatmentNotes { get; set; }
         public DateTime CreatedAt { get; set; }
         public int AppointmentId { get; set; }
-        public Appointment Appointment { get; set; }
+        public Appointment Appointment { get; set; } = null!;
+        public Prescription? Prescription { get; set; }
     }
 }

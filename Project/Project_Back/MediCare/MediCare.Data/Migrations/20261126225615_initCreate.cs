@@ -245,6 +245,28 @@ namespace MediCare.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Patients",
                 columns: table => new
                 {
@@ -349,6 +371,26 @@ namespace MediCare.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MriScans",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PatientId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MriScans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MriScans_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MedicalRecords",
                 columns: table => new
                 {
@@ -370,6 +412,68 @@ namespace MediCare.Data.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MriAnalyses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AnalysisResult = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MriScanId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MriAnalyses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MriAnalyses_MriScans_MriScanId",
+                        column: x => x.MriScanId,
+                        principalTable: "MriScans",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Prescriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prescriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prescriptions_MedicalRecords_MedicalRecordId",
+                        column: x => x.MedicalRecordId,
+                        principalTable: "MedicalRecords",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PrescriptionItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Duration = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Instructions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PrescriptionId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PrescriptionItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PrescriptionItems_Prescriptions_PrescriptionId",
+                        column: x => x.PrescriptionId,
+                        principalTable: "Prescriptions",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.InsertData(
                 table: "Specializations",
                 columns: new[] { "Id", "Description", "ImageUrl", "Name", "NameAr" },
@@ -386,9 +490,11 @@ namespace MediCare.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_DoctorId",
+                name: "IX_Appointments_DoctorId_AppointmentDate_StartTime",
                 table: "Appointments",
-                column: "DoctorId");
+                columns: new[] { "DoctorId", "AppointmentDate", "StartTime" },
+                unique: true,
+                filter: "[Status] IN ('Pending', 'Confirmed', 'Done')");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_PatientId",
@@ -466,6 +572,32 @@ namespace MediCare.Data.Migrations
                 table: "MedicalRecords",
                 column: "AppointmentId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MriAnalyses_MriScanId",
+                table: "MriAnalyses",
+                column: "MriScanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MriScans_PatientId",
+                table: "MriScans",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PrescriptionItems_PrescriptionId",
+                table: "PrescriptionItems",
+                column: "PrescriptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescriptions_MedicalRecordId",
+                table: "Prescriptions",
+                column: "MedicalRecordId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -496,10 +628,25 @@ namespace MediCare.Data.Migrations
                 name: "DoctorVacations");
 
             migrationBuilder.DropTable(
-                name: "MedicalRecords");
+                name: "MriAnalyses");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PrescriptionItems");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "MriScans");
+
+            migrationBuilder.DropTable(
+                name: "Prescriptions");
+
+            migrationBuilder.DropTable(
+                name: "MedicalRecords");
 
             migrationBuilder.DropTable(
                 name: "Appointments");

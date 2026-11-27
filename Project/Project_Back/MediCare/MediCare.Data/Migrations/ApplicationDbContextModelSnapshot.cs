@@ -169,15 +169,17 @@ namespace MediCare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
-
                     b.HasIndex("PatientId");
 
                     b.HasIndex("RescheduledFromId")
                         .IsUnique()
                         .HasFilter("[RescheduledFromId] IS NOT NULL");
 
-                    b.ToTable("Appointments");
+                    b.HasIndex("DoctorId", "AppointmentDate", "StartTime")
+                        .IsUnique()
+                        .HasFilter("[Status] IN ('Pending', 'Confirmed', 'Done')");
+
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Assistant", b =>
@@ -187,7 +189,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Assistants");
+                    b.ToTable("Assistants", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Doctor", b =>
@@ -223,7 +225,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("SpecializationId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.DoctorSchedule", b =>
@@ -257,7 +259,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorSchedules");
+                    b.ToTable("DoctorSchedules", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.DoctorVacation", b =>
@@ -285,7 +287,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorVacations");
+                    b.ToTable("DoctorVacations", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.HomeAddress", b =>
@@ -306,7 +308,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeAddresses");
+                    b.ToTable("HomeAddresses", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.MedicalRecord", b =>
@@ -337,7 +339,91 @@ namespace MediCare.Data.Migrations
                     b.HasIndex("AppointmentId")
                         .IsUnique();
 
-                    b.ToTable("MedicalRecords");
+                    b.ToTable("MedicalRecords", (string)null);
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.MriAnalysis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnalysisResult")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MriScanId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MriScanId");
+
+                    b.ToTable("MriAnalyses", (string)null);
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.MriScan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("MriScans", (string)null);
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Patient", b =>
@@ -359,7 +445,66 @@ namespace MediCare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.Prescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MedicalRecordId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalRecordId")
+                        .IsUnique();
+
+                    b.ToTable("Prescriptions", (string)null);
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.PrescriptionItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Dosage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.ToTable("PrescriptionItems", (string)null);
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Specialization", b =>
@@ -388,7 +533,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specializations");
+                    b.ToTable("Specializations", (string)null);
 
                     b.HasData(
                         new
@@ -689,6 +834,39 @@ namespace MediCare.Data.Migrations
                     b.Navigation("Appointment");
                 });
 
+            modelBuilder.Entity("MediCare.Data.Entities.MriAnalysis", b =>
+                {
+                    b.HasOne("MediCare.Data.Entities.MriScan", "MriScan")
+                        .WithMany()
+                        .HasForeignKey("MriScanId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MriScan");
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.MriScan", b =>
+                {
+                    b.HasOne("MediCare.Data.Entities.Patient", "Patient")
+                        .WithMany("MriScans")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.Notification", b =>
+                {
+                    b.HasOne("MediCare.Data.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MediCare.Data.Entities.Patient", b =>
                 {
                     b.HasOne("MediCare.Data.Entities.ApplicationUser", "User")
@@ -698,6 +876,28 @@ namespace MediCare.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.Prescription", b =>
+                {
+                    b.HasOne("MediCare.Data.Entities.MedicalRecord", "MedicalRecord")
+                        .WithOne("Prescription")
+                        .HasForeignKey("MediCare.Data.Entities.Prescription", "MedicalRecordId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MedicalRecord");
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.PrescriptionItem", b =>
+                {
+                    b.HasOne("MediCare.Data.Entities.Prescription", "Prescription")
+                        .WithMany("PrescriptionItems")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Prescription");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -762,8 +962,7 @@ namespace MediCare.Data.Migrations
 
             modelBuilder.Entity("MediCare.Data.Entities.Appointment", b =>
                 {
-                    b.Navigation("MedicalRecord")
-                        .IsRequired();
+                    b.Navigation("MedicalRecord");
 
                     b.Navigation("RescheduledTo");
                 });
@@ -777,9 +976,21 @@ namespace MediCare.Data.Migrations
                     b.Navigation("DoctorVacations");
                 });
 
+            modelBuilder.Entity("MediCare.Data.Entities.MedicalRecord", b =>
+                {
+                    b.Navigation("Prescription");
+                });
+
             modelBuilder.Entity("MediCare.Data.Entities.Patient", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("MriScans");
+                });
+
+            modelBuilder.Entity("MediCare.Data.Entities.Prescription", b =>
+                {
+                    b.Navigation("PrescriptionItems");
                 });
 
             modelBuilder.Entity("MediCare.Data.Entities.Specialization", b =>

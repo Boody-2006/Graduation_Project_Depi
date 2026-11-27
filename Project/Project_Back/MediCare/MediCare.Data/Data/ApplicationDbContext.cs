@@ -31,6 +31,16 @@ namespace MediCare.Data.Data
 
         public DbSet<HomeAddress> HomeAddresses { get; set; }
 
+        public DbSet<Prescription> Prescriptions { get; set; }
+
+        public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<MriScan> MriScans { get; set; }
+
+        public DbSet<MriAnalysis> MriAnalyses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

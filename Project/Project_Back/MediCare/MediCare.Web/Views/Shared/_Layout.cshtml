@@ -1,4 +1,4 @@
-﻿@*
+@*
     _Layout.cshtml
     The shared frame (master page) of every page: header, footer and the CSS/fonts.
     Each View is placed inside @RenderBody(), and sets its own title with ViewData["Title"].
@@ -6,6 +6,7 @@
 @{
     // Which controller is open? Used to highlight the active link in the navbar.
     var current = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
 }
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
@@ -19,16 +20,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    @* medicare.css = base styles, medicare-pro.css = the professional design layer (must come second).
-       asp-append-version stops the browser from showing an old cached copy after a change. *@
-    @* Person 5's login/register pages use Bootstrap classes (row, col-*, form-control, alert...).
-       So Bootstrap is loaded ONLY on the Account pages; every other page uses our own design. *@
-    @if (current == "Account")
+    @* Bootstrap is loaded for Account, Admin, and Booking pages for UI components *@
+    @if (current == "Account" || current == "Admin" || current == "Booking")
     {
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     }
 
-    @* site.css comes from the team (Person 5's login/register styles); it is loaded FIRST so our design can override it *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/medicare.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/medicare-pro.css" asp-append-version="true" />
@@ -49,7 +46,7 @@
         });
     </script>
 </head>
-<body class="@(current == "Account" ? "page-account" : "")">
+<body class="@(current == "Account" || current == "Admin" || current == "Booking" ? "page-account" : "")">
 
     @* ===== Header ===== *@
     <header class="hd">
@@ -65,6 +62,15 @@
             <nav class="nv">
                 <a class="@(current == "Home" ? "on" : "")" asp-controller="Home" asp-action="Index">Home</a>
                 <a class="@(current == "Doctors" ? "on" : "")" asp-controller="Doctors" asp-action="Index">Doctors</a>
+                @if (User.IsInRole("Patient"))
+                {
+                    <a class="@(current == "Booking" && action == "Index" ? "on" : "")" asp-controller="Booking" asp-action="Index">Book Appointment</a>
+                    <a class="@(current == "Booking" && action == "MyAppointments" ? "on" : "")" asp-controller="Booking" asp-action="MyAppointments">My Appointments</a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="@(current == "Admin" ? "on" : "")" asp-controller="Admin" asp-action="PendingDoctors">Approve Doctors</a>
+                }
             </nav>
 
             @* Sign in / Register (or the user name + Logout when logged in) comes from Person 5's partial *@
@@ -73,8 +79,21 @@
     </header>
 
     @* ===== Page content ===== *@
-    @* Account pages (Person 5) expect a Bootstrap container around the content *@
-    <main class="@(current == "Account" ? "container pb-3" : "")">
+    <main class="@(current == "Account" || current == "Admin" || current == "Booking" ? "container pb-3" : "")">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show my-3" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
         @RenderBody()
     </main>
 
@@ -110,8 +129,8 @@
         </div>
     </footer>
 
-    @* jQuery + Bootstrap JS only on Account pages (form validation and dismissible alerts) *@
-    @if (current == "Account")
+    @* jQuery + Bootstrap JS for form validation, modals, and alerts *@
+    @if (current == "Account" || current == "Admin" || current == "Booking")
     {
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

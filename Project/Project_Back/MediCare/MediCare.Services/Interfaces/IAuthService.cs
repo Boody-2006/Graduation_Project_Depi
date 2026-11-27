@@ -1,3 +1,4 @@
+using MediCare.Data.Entities;
 using MediCare.Services.ViewModels;
 
 namespace MediCare.Services.Interfaces
@@ -8,5 +9,6 @@ namespace MediCare.Services.Interfaces
         Task<AuthResult> RegisterDoctorAsync(RegisterDoctorViewModel model);
         Task<AuthResult> LoginAsync(LoginViewModel model);
         Task LogoutAsync();
+        Task<IReadOnlyList<Specialization>> GetSpecializationsAsync();
     }
 }

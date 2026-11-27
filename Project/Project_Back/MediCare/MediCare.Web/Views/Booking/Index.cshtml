@@ -1,0 +1,189 @@
+@model MediCare.Services.ViewModels.BookingPageViewModel
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1" style="color: #14283c;">Book an Appointment</h1>
+        <p class="text-muted mb-0">Select an approved doctor and click any available slot on the calendar to reserve your visit.</p>
+    </div>
+    <a asp-action="MyAppointments" class="btn btn-outline-primary">My Appointments</a>
+</div>
+
+@if (!Model.Doctors.Any())
+{
+    <div class="alert alert-info border-0 shadow-sm">
+        No approved doctors are available yet. Once an Admin approves registered doctors in <strong>Admin → Doctor Approvals</strong>, they will appear here for booking.
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        <!-- Doctor Selector Card -->
+        <div class="col-lg-4">
+            <div class="card border shadow-sm" style="border-color: #dde4ea !important;">
+                <div class="card-header bg-white py-3">
+                    <h2 class="h6 fw-bold mb-0">1. Choose a Doctor</h2>
+                </div>
+                <div class="card-body">
+                    <label for="doctorSelect" class="form-label fw-semibold">Doctor</label>
+                    <select id="doctorSelect" class="form-select mb-3">
+                        @foreach (var doc in Model.Doctors)
+                        {
+                            <option value="@doc.DoctorId"
+                                    data-spec="@doc.SpecializationName"
+                                    data-city="@doc.City"
+                                    data-fee="@doc.ConsultationFee.ToString("N0")"
+                                    selected="@(doc.DoctorId == Model.SelectedDoctorId)">
+                                @doc.FullName — @doc.SpecializationName
+                            </option>
+                        }
+                    </select>
+
+                    <div id="doctorDetailsBox" class="p-3 rounded-3" style="background: #f4f6f8; border: 1px solid #dde4ea;">
+                        <div class="small text-muted">Specialization</div>
+                        <div class="fw-semibold mb-2" id="docSpec">—</div>
+                        <div class="small text-muted">Location</div>
+                        <div class="fw-semibold mb-2" id="docCity">—</div>
+                        <div class="small text-muted">Consultation Fee</div>
+                        <div class="fw-bold" style="color: #1d5f8a;" id="docFee">—</div>
+                    </div>
+
+                    <div class="mt-3 small text-muted">
+                        <span class="d-inline-block rounded-circle me-1" style="width:10px;height:10px;background:#1d5f8a;"></span> Available slot (click to book)<br />
+                        <span class="d-inline-block rounded-circle me-1" style="width:10px;height:10px;background:#c6d0d9;"></span> Already booked
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FullCalendar Panel -->
+        <div class="col-lg-8">
+            <div class="card border shadow-sm" style="border-color: #dde4ea !important;">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h2 class="h6 fw-bold mb-0">2. Pick an Available Slot</h2>
+                    <span class="small text-muted">Click a slot to confirm</span>
+                </div>
+                <div class="card-body">
+                    <div id="bookingCalendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Confirmation Modal -->
+    <div class="modal fade" id="bookSlotModal" tabindex="-1" aria-labelledby="bookSlotModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form asp-action="Book" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="BookingForm.DoctorId" id="modalDoctorId" value="@Model.SelectedDoctorId" />
+                    <input type="hidden" name="BookingForm.AppointmentDate" id="modalDate" />
+                    <input type="hidden" name="BookingForm.StartTime" id="modalTime" />
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookSlotModalLabel">Confirm Appointment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="p-3 rounded-3 mb-3" style="background:#e5eff6; color:#14283c;">
+                            <div><strong>Doctor:</strong> <span id="modalDoctorName"></span></div>
+                            <div><strong>Date:</strong> <span id="modalDateDisplay"></span></div>
+                            <div><strong>Time:</strong> <span id="modalTimeDisplay"></span></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bookingType" class="form-label fw-semibold">Visit Type</label>
+                            <select name="BookingForm.Type" id="bookingType" class="form-select">
+                                <option value="Consultation">Consultation</option>
+                                <option value="FollowUp">Follow-Up</option>
+                                <option value="Clinic">Clinic Visit</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="bookingNotes" class="form-label fw-semibold">Notes (Optional)</label>
+                            <textarea name="BookingForm.Notes" id="bookingNotes" class="form-control" rows="2" placeholder="Briefly describe your symptoms or reason for visit"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-auth-primary px-4">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @if (Model.Doctors.Any())
+    {
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const doctorSelect = document.getElementById('doctorSelect');
+                const calendarEl = document.getElementById('bookingCalendar');
+                const bookModal = new bootstrap.Modal(document.getElementById('bookSlotModal'));
+
+                function updateDoctorInfo() {
+                    const opt = doctorSelect.options[doctorSelect.selectedIndex];
+                    document.getElementById('docSpec').textContent = opt.dataset.spec || '—';
+                    document.getElementById('docCity').textContent = opt.dataset.city || '—';
+                    document.getElementById('docFee').textContent = (opt.dataset.fee || '0') + ' EGP';
+                    document.getElementById('modalDoctorId').value = opt.value;
+                    document.getElementById('modalDoctorName').textContent = opt.text;
+                }
+
+                updateDoctorInfo();
+
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'timeGridWeek',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'timeGridWeek,timeGridDay,listWeek'
+                    },
+                    slotMinTime: '08:00:00',
+                    slotMaxTime: '20:00:00',
+                    allDaySlot: false,
+                    height: 'auto',
+                    nowIndicator: true,
+                    events: function (fetchInfo, successCallback, failureCallback) {
+                        const docId = doctorSelect.value;
+                        const url = `@Url.Action("GetSlots", "Booking")?doctorId=${encodeURIComponent(docId)}&start=${encodeURIComponent(fetchInfo.startStr)}&end=${encodeURIComponent(fetchInfo.endStr)}`;
+                        fetch(url)
+                            .then(r => r.json())
+                            .then(data => successCallback(data))
+                            .catch(err => failureCallback(err));
+                    },
+                    eventClick: function (info) {
+                        if (!info.event.extendedProps.isAvailable) {
+                            return;
+                        }
+                        const start = info.event.start;
+                        const yyyy = start.getFullYear();
+                        const mm = String(start.getMonth() + 1).padStart(2, '0');
+                        const dd = String(start.getDate()).padStart(2, '0');
+                        const hh = String(start.getHours()).padStart(2, '0');
+                        const min = String(start.getMinutes()).padStart(2, '0');
+
+                        document.getElementById('modalDate').value = `${yyyy}-${mm}-${dd}`;
+                        document.getElementById('modalTime').value = `${hh}:${min}:00`;
+                        document.getElementById('modalDateDisplay').textContent = start.toDateString();
+                        document.getElementById('modalTimeDisplay').textContent = `${hh}:${min}`;
+                        bookModal.show();
+                    }
+                });
+
+                calendar.render();
+
+                doctorSelect.addEventListener('change', function () {
+                    updateDoctorInfo();
+                    calendar.refetchEvents();
+                });
+            });
+        </script>
+    }
+}

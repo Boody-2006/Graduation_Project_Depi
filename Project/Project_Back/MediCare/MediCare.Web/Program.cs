@@ -28,27 +28,35 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
     options.User.RequireUniqueEmail = true;
+
+    // Lockout settings against brute force attacks
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.Cookie.Name = ".MediCare.Auth";
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.SlidingExpiration = true;
 });
 
-// Register Authentication Service (Dependency Injection)
+// Register Authentication & Services (Dependency Injection)
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
-// Doctor listing page (Person 6).
-// TEMPORARY: fake data until the real DoctorService is plugged in.
-// Later this line becomes: AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IAdminDoctorService, AdminDoctorService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddControllersWithViews();
 

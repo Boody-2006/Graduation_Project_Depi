@@ -1,0 +1,96 @@
+﻿@model IEnumerable<MediCare.Services.ViewModels.MedicalRecordIndexViewModel>
+
+@{
+    ViewData["Title"] = "Medical Records";
+}
+
+<div class="page-header">
+    <h1>Medical Records</h1>
+    <p class="mu">View your patients' medical records.</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="record-card">
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center p-4">
+            <h3>No Medical Records Found</h3>
+            <p class="mu">
+                There are currently no medical records to display.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Record Date</th>
+                        <th>Symptoms</th>
+                        <th>Diagnosis</th>
+                        <th>Treatment Notes</th>
+                        <th>Appointment ID</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var record in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@record.PatientName</strong>
+                            </td>
+
+                            <td>
+                                @record.CreatedAt.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(record.Symptoms)
+                                    ? "N/A"
+                                    : record.Symptoms)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(record.Diagnosis)
+                                    ? "N/A"
+                                    : record.Diagnosis)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrWhiteSpace(record.TreatmentNotes)
+                                    ? "N/A"
+                                    : record.TreatmentNotes)
+                            </td>
+
+                            <td>
+                                #@record.AppointmentId
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

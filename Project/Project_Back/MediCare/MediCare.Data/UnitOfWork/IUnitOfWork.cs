@@ -12,6 +12,10 @@ namespace MediCare.Data.UnitOfWork
 
         ISpecializationRepository Specializations { get; }
 
+        IMedicalRecordRepository MedicalRecords { get; }
+
+        IPrescriptionRepository Prescriptions { get; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

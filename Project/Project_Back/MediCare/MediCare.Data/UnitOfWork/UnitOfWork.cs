@@ -12,13 +12,17 @@ namespace MediCare.Data.UnitOfWork
             IDoctorRepository doctors,
             IPatientRepository patients,
             IAppointmentRepository appointments,
-            ISpecializationRepository specializations)
+            ISpecializationRepository specializations,
+            IMedicalRecordRepository medicalRecords,
+            IPrescriptionRepository prescriptions)
         {
             _context = context;
             Doctors = doctors;
             Patients = patients;
             Appointments = appointments;
             Specializations = specializations;
+            MedicalRecords = medicalRecords;
+            Prescriptions = prescriptions;
         }
 
         public IDoctorRepository Doctors { get; }
@@ -28,6 +32,10 @@ namespace MediCare.Data.UnitOfWork
         public IAppointmentRepository Appointments { get; }
 
         public ISpecializationRepository Specializations { get; }
+
+        public IMedicalRecordRepository MedicalRecords { get; }
+
+        public IPrescriptionRepository Prescriptions { get; }
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

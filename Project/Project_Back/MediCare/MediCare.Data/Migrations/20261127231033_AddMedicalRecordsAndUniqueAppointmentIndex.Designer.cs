@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261127143323_AddMedicalRecordsAndUniqueAppointmentIndex")]
+    [Migration("20261127231033_AddMedicalRecordsAndUniqueAppointmentIndex")]
     partial class AddMedicalRecordsAndUniqueAppointmentIndex
     {
         /// <inheritdoc />
@@ -180,7 +180,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("DoctorId", "AppointmentDate", "StartTime")
                         .IsUnique()
-                        .HasFilter("[Status] = 'Pending' OR [Status] = 'Confirmed' OR [Status] = 'Done'");
+                        .HasFilter("[Status] IN ('Pending', 'Confirmed', 'Done')");
 
                     b.ToTable("Appointments");
                 });

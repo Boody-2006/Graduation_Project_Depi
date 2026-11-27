@@ -177,7 +177,7 @@ namespace MediCare.Data.Migrations
 
                     b.HasIndex("DoctorId", "AppointmentDate", "StartTime")
                         .IsUnique()
-                        .HasFilter("[Status] = 'Pending' OR [Status] = 'Confirmed' OR [Status] = 'Done'");
+                        .HasFilter("[Status] IN ('Pending', 'Confirmed', 'Done')");
 
                     b.ToTable("Appointments");
                 });

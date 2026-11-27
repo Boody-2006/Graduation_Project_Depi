@@ -31,7 +31,7 @@ namespace MediCare.Data.Configurations
 
             builder.HasIndex(a => new { a.DoctorId, a.AppointmentDate, a.StartTime })
                 .IsUnique()
-                .HasFilter("[Status] = 'Pending' OR [Status] = 'Confirmed' OR [Status] = 'Done'");
+                .HasFilter("[Status] IN ('Pending', 'Confirmed', 'Done')");
         }
     }
 }

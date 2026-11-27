@@ -62,7 +62,7 @@ namespace MediCare.Data.Migrations
                 table: "Appointments",
                 columns: new[] { "DoctorId", "AppointmentDate", "StartTime" },
                 unique: true,
-                filter: "[Status] = 'Pending' OR [Status] = 'Confirmed' OR [Status] = 'Done'");
+                filter: "[Status] IN ('Pending', 'Confirmed', 'Done')");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionItems_PrescriptionId",

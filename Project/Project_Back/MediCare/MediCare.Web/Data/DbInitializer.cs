@@ -68,13 +68,6 @@ namespace MediCare.Web.Data
             }
             else
             {
-                // Ensure Admin password is set to the configured secret
-                if (!await userManager.CheckPasswordAsync(adminUser, adminPassword))
-                {
-                    var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
-                    await userManager.ResetPasswordAsync(adminUser, token, adminPassword);
-                }
-
                 // Ensure Admin role
                 if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
                 {

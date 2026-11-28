@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MediCare.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddMedicalRecordsAndUniqueAppointmentIndex : Migration
+    public partial class AddMedicalRecordsAndPrescriptions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

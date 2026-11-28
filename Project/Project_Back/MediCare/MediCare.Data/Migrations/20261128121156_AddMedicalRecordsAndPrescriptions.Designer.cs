@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261127231033_AddMedicalRecordsAndUniqueAppointmentIndex")]
-    partial class AddMedicalRecordsAndUniqueAppointmentIndex
+    [Migration("20261128121156_AddMedicalRecordsAndPrescriptions")]
+    partial class AddMedicalRecordsAndPrescriptions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -13,5 +13,6 @@ namespace MediCare.Data.Entities
         public DateTime CreatedAt { get; set; }
         public int AppointmentId { get; set; }
         public Appointment Appointment { get; set; }
+        public Prescription? Prescription { get; set; }
     }
 }

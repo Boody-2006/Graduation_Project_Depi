@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MediCare.Data;
 using MediCare.Data.Data;
 using MediCare.Data.Entities;
-using MediCare.Services.Interfaces;
+using MediCare.Data.Repositories;
 using MediCare.Services.Implementations;
+using MediCare.Services.Interfaces;
 using MediCare.Web.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,8 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IAdminDoctorService, AdminDoctorService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 
 builder.Services.AddControllersWithViews();
 

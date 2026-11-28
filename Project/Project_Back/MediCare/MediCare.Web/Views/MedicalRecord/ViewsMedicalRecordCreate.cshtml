@@ -1,0 +1,293 @@
+﻿@model MediCare.Services.ViewModels.MedicalRecordViewModel
+
+@{
+    ViewData["Title"] = "Create Medical Record";
+}
+
+<style>
+    .record-card {
+        background: var(--cd);
+        border: 1px solid var(--ln);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 22px;
+    }
+
+    .record-form {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .record-form label {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 16px;
+        font-weight: 500;
+    }
+
+    .medicine-item {
+        background: var(--bg);
+        border: 1px solid var(--ln);
+        border-radius: 8px;
+        padding: 18px;
+        margin-bottom: 14px;
+    }
+
+    .medicine-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .medicine-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .record-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .validation {
+        color: var(--bad);
+    }
+
+    @@media(max-width:600px) {
+        .medicine-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .record-card {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="record-form">
+
+    <h1>Create Medical Record</h1>
+
+    <p class="mu">
+        Add the patient's medical information and prescription.
+    </p>
+
+    <form asp-controller="MedicalRecord"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="AppointmentId" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation"></div>
+
+        <section class="record-card">
+
+            <h2>Medical Information</h2>
+
+            <label asp-for="Symptoms">
+                Symptoms
+                <textarea asp-for="Symptoms"
+                          placeholder="Enter patient symptoms"></textarea>
+            </label>
+
+            <label asp-for="Diagnosis">
+                Diagnosis
+                <textarea asp-for="Diagnosis"
+                          placeholder="Enter diagnosis"
+                          required></textarea>
+            </label>
+
+            <label asp-for="TreatmentNotes">
+                Treatment Notes
+                <textarea asp-for="TreatmentNotes"
+                          placeholder="Enter treatment notes"></textarea>
+            </label>
+
+        </section>
+
+        <section class="record-card">
+
+            <h2>Prescription</h2>
+
+            <p class="mu">
+                Add one or more medicines to the prescription.
+            </p>
+
+            <div id="medicinesContainer">
+
+                @for (int i = 0; i < Model.Medicines.Count; i++)
+                {
+                    <div class="medicine-item">
+
+                        <div class="medicine-title">
+                            <strong>Medicine</strong>
+
+                            <button type="button"
+                                    class="sm dg remove-medicine">
+                                Remove
+                            </button>
+                        </div>
+
+                        <div class="medicine-grid">
+
+                            <label>
+                                Medication Name
+                                <input asp-for="Medicines[i].MedicationName"
+                                       required />
+                            </label>
+
+                            <label>
+                                Dosage
+                                <input asp-for="Medicines[i].Dosage"
+                                       required />
+                            </label>
+
+                            <label>
+                                Frequency
+                                <input asp-for="Medicines[i].Frequency"
+                                       required />
+                            </label>
+
+                            <label>
+                                Duration
+                                <input asp-for="Medicines[i].Duration"
+                                       required />
+                            </label>
+
+                        </div>
+
+                        <label>
+                            Instructions
+                            <textarea asp-for="Medicines[i].Instructions"></textarea>
+                        </label>
+
+                    </div>
+                }
+
+            </div>
+
+            <button type="button"
+                    class="sm"
+                    id="addMedicine">
+                + Add Medicine
+            </button>
+
+        </section>
+
+        <div class="record-actions">
+
+            <button type="submit" class="pb">
+                Save Medical Record
+            </button>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="sm">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    const container = document.getElementById("medicinesContainer");
+
+    function updateMedicineIndexes() {
+
+        const items = container.querySelectorAll(".medicine-item");
+
+        items.forEach((item, index) => {
+
+            item.querySelectorAll("input, textarea").forEach(input => {
+
+                const property = input.name.split(".").pop();
+
+                input.name = `Medicines[${index}].${property}`;
+
+                input.id = `Medicines_${index}__${property}`;
+
+            });
+
+        });
+    }
+
+    function addMedicine() {
+
+        const item = document.createElement("div");
+
+        item.className = "medicine-item";
+
+        item.innerHTML = `
+            <div class="medicine-title">
+                <strong>Medicine</strong>
+                <button type="button" class="sm dg remove-medicine">
+                    Remove
+                </button>
+            </div>
+
+            <div class="medicine-grid">
+
+                <label>
+                    Medication Name
+                    <input type="text" required
+                           name="MedicationName" />
+                </label>
+
+                <label>
+                    Dosage
+                    <input type="text" required
+                           name="Dosage" />
+                </label>
+
+                <label>
+                    Frequency
+                    <input type="text" required
+                           name="Frequency" />
+                </label>
+
+                <label>
+                    Duration
+                    <input type="text" required
+                           name="Duration" />
+                </label>
+
+            </div>
+
+            <label>
+                Instructions
+                <textarea name="Instructions"></textarea>
+            </label>
+        `;
+
+        container.appendChild(item);
+
+        updateMedicineIndexes();
+    }
+
+    document.getElementById("addMedicine")
+        .addEventListener("click", addMedicine);
+
+    container.addEventListener("click", function (event) {
+
+        if (event.target.classList.contains("remove-medicine")) {
+
+            event.target.closest(".medicine-item").remove();
+
+            updateMedicineIndexes();
+
+        }
+
+    });
+
+    updateMedicineIndexes();
+</script>
